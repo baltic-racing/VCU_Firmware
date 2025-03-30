@@ -1,0 +1,37 @@
+/*
+ * motor_control.c
+ *
+ *  Created on: Mar 28, 2025
+ *      Author: racin
+ */
+#include "motor_control.h"
+#include "stdlib.h"
+#include "gpio.h"
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	CAN_interrupt();
+}
+
+void CAN_interrupt()
+{
+	if (HAL_GetTick()>= last20 + 20)
+	{
+		CAN_50(AMS0_databytes);
+		last20 = HAL_GetTick();
+	}
+	if (HAL_GetTick()>= last100 + 100)
+	{
+		CAN_10(AMS1_databytes);
+
+		HAL_GPIO_TogglePin(GPIOD, LED_Blue_Pin);	// toggle LED
+		last100 = HAL_GetTick();
+	}
+}
+
+void motor_control()
+{
+	HAL_GPIO_TogglePin(GPIOD, LED_RED_Pin);
+	HAL_Delay(1000);
+}
+

@@ -1,0 +1,10 @@
+21:23:29 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j4 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  12488	     36	   1760	  14284	   37cc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+
+21:23:30 Build Finished. 0 errors, 0 warnings. (took 388ms)
+

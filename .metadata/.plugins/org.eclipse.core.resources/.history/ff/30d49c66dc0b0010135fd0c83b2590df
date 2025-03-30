@@ -1,0 +1,17 @@
+/*
+ * motor_control.c
+ *
+ *  Created on: Mar 28, 2025
+ *      Author: racin
+ */
+#include "motor_control.h"
+#include "stdlib.h"
+#include "gpio.h"
+
+
+void motor_control()
+{
+	HAL_GPIO_TogglePin(GPIOD, LED_RED_Pin);
+	HAL_Delay(1000);
+}
+

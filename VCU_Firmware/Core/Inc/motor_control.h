@@ -12,7 +12,6 @@
 #include "gpio.h"
 #include "can.h"
 
-void CAN_interrupt(void);
 void motor_control(void);
 
 #endif /* INC_MOTOR_CONTROL_H_ */

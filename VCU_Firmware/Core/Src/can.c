@@ -25,10 +25,13 @@
 uint8_t test1[8];
 uint8_t test2[8];
 
-/*
+
+uint64_t last10 = 0;
 uint64_t last20 = 0;
 uint64_t last100 = 0;
-*/
+
+const uint8_t Node_ID_INV_R = 10;
+const uint8_t Node_ID_INV_L = 20;
 
 /* {StdId, ExtId, IDE, RTR, DLC}
  * uint32_t StdId;   Specifies the standard identifier.
@@ -47,8 +50,31 @@ uint64_t last100 = 0;
 
  */
 // Header from DBC
-CAN_TxHeaderTypeDef VCU0_header = {0x200, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU1_header = {0x201, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU1_header_R = {((0x1 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU2_header_R = {((0x2 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU3_header_R = {((0x3 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU4_header_R = {((0x4 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU5_header_R = {((0x5 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU6_header_R = {((0x6 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU8_header_R = {((0x8 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU9_header_R = {((0x9 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUA_header_R = {((0xA << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUB_header_R = {((0xB << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUC_header_R = {((0xC << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+CAN_TxHeaderTypeDef VCU1_header_L = {((0x1 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU2_header_L = {((0x2 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU3_header_L = {((0x3 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU4_header_L = {((0x4 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU5_header_L = {((0x5 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU6_header_L = {((0x6 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU8_header_L = {((0x8 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU9_header_L = {((0x9 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUA_header_L = {((0xA << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUB_header_L = {((0xB << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUC_header_L = {((0xC << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+
 
 // transmit CAN Message
 void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData)
@@ -68,6 +94,7 @@ void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxDat
 	}
 }
 
+/*
 void CAN_RX(CAN_HandleTypeDef hcan)
 {
 
@@ -77,12 +104,20 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
 	{
-
+		static uint8_t retries = 0;
+		if (retries < 5) {  // Maximum retries
+			retries++;
+			CAN_RX(hcan, RxHeader, RxData);
+		} else {
+			retries = 0;  // Reset retry count after a failure
+			// Optionally, handle the failure (e.g., by logging it)
+			HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
+		}
 	}
 }
 
+*/
 
-/*
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	CAN_interrupt();
@@ -90,20 +125,25 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void CAN_interrupt()
 {
-	if (HAL_GetTick()>= last20 + 20)
-	{
-		CAN_50();
-		last20 = HAL_GetTick();
-	}
-	if (HAL_GetTick()>= last100 + 100)
-	{
-		CAN_10();
+	if (HAL_GetTick()>= last100 + 100) //10Hz
+		{
+			//CAN_10();
 
-		HAL_GPIO_TogglePin(GPIOD, LED_Blue_Pin);	// toggle LED
-		last100 = HAL_GetTick();
+			HAL_GPIO_TogglePin(GPIOD, LED_Blue_Pin);	// toggle LED
+			last100 = HAL_GetTick();
+		}
+	if (HAL_GetTick()>= last20 + 20) //50 Hz
+		{
+			//CAN_50();
+			last20 = HAL_GetTick();
+		}
+	if (HAL_GetTick()>= last10 +10) //100 Hz
+	{
+			CAN_100();
+			last10 = HAL_GetTick();
 	}
 }
-*/
+
 
 void CAN_50()		// CAN Messages transmitted with 50 Hz
 {
@@ -117,8 +157,18 @@ void CAN_50()		// CAN Messages transmitted with 50 Hz
 	test1[6] = 1;
 	test1[7] = 1;
 
-	CAN_TX(hcan1, VCU0_header, test1);
-	//CAN_TX(hcan2, VCU0_header, test1);
+	CAN_TX(hcan1, VCU1_header_R, test1);
+	CAN_TX(hcan1, VCU2_header_R, test2);
+		//CAN_TX(hcan1, VCU3_header_R, test2);
+
+		CAN_TX(hcan1, VCU4_header_R, test2);
+		CAN_TX(hcan1, VCU5_header_R, test2);
+		CAN_TX(hcan1, VCU6_header_R, test2);
+		CAN_TX(hcan1, VCU8_header_R, test2);
+		CAN_TX(hcan1, VCU9_header_R, test2);
+		CAN_TX(hcan1, VCUA_header_R, test2);
+		CAN_TX(hcan1, VCUB_header_R, test2);
+		CAN_TX(hcan1, VCUC_header_R, test2);
 
 }
 
@@ -133,10 +183,21 @@ void CAN_10()		// CAN Messages transmitted with 10 Hz
 	test2[6] = 7;
 	test2[7] = 8;
 
-	CAN_TX(hcan1, VCU1_header, test2);
+	CAN_TX(hcan1, VCU1_header_L, test2);
 	//CAN_TX(hcan2, VCU1_header, test2);
 }
 
+void CAN_100()
+{
+	CAN_TX(hcan1, VCU4_header_R, test2);
+	CAN_TX(hcan1, VCU5_header_R, test2);
+	CAN_TX(hcan1, VCU6_header_R, test2);
+	CAN_TX(hcan1, VCU8_header_R, test2);
+	CAN_TX(hcan1, VCU9_header_R, test2);
+	CAN_TX(hcan1, VCUA_header_R, test2);
+	CAN_TX(hcan1, VCUB_header_R, test2);
+	CAN_TX(hcan1, VCUC_header_R, test2);
+}
 
 /* USER CODE END 0 */
 

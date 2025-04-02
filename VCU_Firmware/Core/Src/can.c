@@ -26,9 +26,12 @@ uint8_t test1[8];
 uint8_t test2[8];
 
 
-uint64_t last10 = 0;
-uint64_t last20 = 0;
-uint64_t last100 = 0;
+volatile uint64_t last10 = 0;
+volatile uint64_t last20 = 0;
+volatile uint64_t last100 = 0;
+volatile uint8_t send_can_100_message = 0;
+volatile uint8_t send_can_50_message = 0;
+volatile uint8_t send_can_10_message = 0;
 
 const uint8_t Node_ID_INV_R = 10;
 const uint8_t Node_ID_INV_L = 20;
@@ -49,6 +52,7 @@ const uint8_t Node_ID_INV_L = 20;
   uint32_t DLC;
 
  */
+
 // Header from DBC
 CAN_TxHeaderTypeDef VCU1_header_R = {((0x1 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU2_header_R = {((0x2 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
@@ -74,25 +78,39 @@ CAN_TxHeaderTypeDef VCUA_header_L = {((0xA << 5) | Node_ID_INV_R), 0, CAN_ID_STD
 CAN_TxHeaderTypeDef VCUB_header_L = {((0xB << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCUC_header_L = {((0xC << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
-
-
 // transmit CAN Message
 void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData)
 {
 	uint32_t TxMailbox;
-	if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+	uint32_t freeMailboxes = HAL_CAN_GetTxMailboxesFreeLevel(&hcan);;
+
+	if(freeMailboxes > 0)
 	{
-	    static uint8_t retries = 0;
-	    if (retries < 5) {  // Maximum retries
-	        retries++;
-	        CAN_TX(hcan, TxHeader, TxData);
-	    } else {
-	        retries = 0;  // Reset retry count after a failure
-	        // Optionally, handle the failure (e.g., by logging it)
-	        HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
-	    }
+		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+		{
+		    static uint8_t retries = 0;
+		    if (retries < 5) {  // Maximum retries
+		        retries++;
+		        CAN_TX(hcan, TxHeader, TxData);
+		    } else {
+		        retries = 0;  // Reset retry count after a failure
+		        // Optionally, handle the failure (e.g., by logging it)
+		        HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
+		    }
+		}
+		else
+		{
+
+		}
+
 	}
+	else
+	{
+		CAN_TX(hcan, TxHeader, TxData);
+	}
+
 }
+
 
 /*
 void CAN_RX(CAN_HandleTypeDef hcan)
@@ -120,7 +138,10 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	CAN_interrupt();
+	if(htim -> Instance == TIM2)
+	{
+		CAN_interrupt();
+	}
 }
 
 void CAN_interrupt()
@@ -128,22 +149,25 @@ void CAN_interrupt()
 	if (HAL_GetTick()>= last100 + 100) //10Hz
 		{
 			//CAN_10();
-
+			send_can_10_message = 1;
 			HAL_GPIO_TogglePin(GPIOD, LED_Blue_Pin);	// toggle LED
 			last100 = HAL_GetTick();
 		}
+
 	if (HAL_GetTick()>= last20 + 20) //50 Hz
 		{
 			//CAN_50();
+			send_can_50_message = 1;
 			last20 = HAL_GetTick();
 		}
-	if (HAL_GetTick()>= last10 +10) //100 Hz
+
+	if (HAL_GetTick()>= last10 + 10) //100 Hz
 	{
-			CAN_100();
+			//CAN_100();
+			send_can_100_message = 1;
 			last10 = HAL_GetTick();
 	}
 }
-
 
 void CAN_50()		// CAN Messages transmitted with 50 Hz
 {
@@ -157,18 +181,14 @@ void CAN_50()		// CAN Messages transmitted with 50 Hz
 	test1[6] = 1;
 	test1[7] = 1;
 
-	CAN_TX(hcan1, VCU1_header_R, test1);
-	CAN_TX(hcan1, VCU2_header_R, test2);
-		//CAN_TX(hcan1, VCU3_header_R, test2);
-
+	if(send_can_50_message > 0)
+	{
+		send_can_50_message = 0;
+		CAN_TX(hcan1, VCU1_header_R, test1);
+		CAN_TX(hcan1, VCU2_header_R, test2);
+		CAN_TX(hcan1, VCU3_header_R, test2);
 		CAN_TX(hcan1, VCU4_header_R, test2);
-		CAN_TX(hcan1, VCU5_header_R, test2);
-		CAN_TX(hcan1, VCU6_header_R, test2);
-		CAN_TX(hcan1, VCU8_header_R, test2);
-		CAN_TX(hcan1, VCU9_header_R, test2);
-		CAN_TX(hcan1, VCUA_header_R, test2);
-		CAN_TX(hcan1, VCUB_header_R, test2);
-		CAN_TX(hcan1, VCUC_header_R, test2);
+	}
 
 }
 
@@ -183,21 +203,51 @@ void CAN_10()		// CAN Messages transmitted with 10 Hz
 	test2[6] = 7;
 	test2[7] = 8;
 
-	CAN_TX(hcan1, VCU1_header_L, test2);
-	//CAN_TX(hcan2, VCU1_header, test2);
+	if(send_can_10_message > 0)
+	{
+		send_can_10_message = 0;
+		CAN_TX(hcan1, VCU1_header_L, test2);
+	}
+
 }
+
 
 void CAN_100()
 {
-	CAN_TX(hcan1, VCU4_header_R, test2);
-	CAN_TX(hcan1, VCU5_header_R, test2);
-	CAN_TX(hcan1, VCU6_header_R, test2);
-	CAN_TX(hcan1, VCU8_header_R, test2);
-	CAN_TX(hcan1, VCU9_header_R, test2);
-	CAN_TX(hcan1, VCUA_header_R, test2);
-	CAN_TX(hcan1, VCUB_header_R, test2);
-	CAN_TX(hcan1, VCUC_header_R, test2);
+	test2[0] = 1;
+	test2[1] = 2;
+	test2[2] = 3;
+	test2[3] = 4;
+	test2[4] = 5;
+	test2[5] = 6;
+	test2[6] = 7;
+	test2[7] = 8;
+
+	if(send_can_100_message > 0)
+	{
+		send_can_100_message = 0;
+		//CAN_TX(hcan1, VCU5_header_R, test2);
+
+		CAN_TX(hcan1, VCU5_header_R, test2);
+
+		CAN_TX(hcan1, VCU6_header_R, test2);
+		CAN_TX(hcan1, VCU8_header_R, test2);
+		CAN_TX(hcan1, VCU9_header_R, test2);
+		CAN_TX(hcan1, VCUA_header_R, test2);
+		CAN_TX(hcan1, VCUB_header_R, test2);
+		CAN_TX(hcan1, VCUC_header_R, test2);
+
+		CAN_TX(hcan1, VCU5_header_L, test2);
+
+		CAN_TX(hcan1, VCU6_header_L, test2);
+		CAN_TX(hcan1, VCU8_header_L, test2);
+		CAN_TX(hcan1, VCU9_header_L, test2);
+		CAN_TX(hcan1, VCUA_header_L, test2);
+		CAN_TX(hcan1, VCUB_header_L, test2);
+		CAN_TX(hcan1, VCUC_header_L, test2);
+	}
 }
+
 
 /* USER CODE END 0 */
 
@@ -314,6 +364,11 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
     GPIO_InitStruct.Alternate = GPIO_AF9_CAN1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
+    /* CAN1 interrupt Init */
+    HAL_NVIC_SetPriority(CAN1_TX_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN1_TX_IRQn);
+    HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
   /* USER CODE BEGIN CAN1_MspInit 1 */
 
   /* USER CODE END CAN1_MspInit 1 */
@@ -373,6 +428,9 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
     */
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
 
+    /* CAN1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(CAN1_TX_IRQn);
+    HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
   /* USER CODE BEGIN CAN1_MspDeInit 1 */
 
   /* USER CODE END CAN1_MspDeInit 1 */

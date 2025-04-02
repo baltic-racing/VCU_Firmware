@@ -14,10 +14,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     //CAN_RX(hcan1);
 }
 */
+
+
 void motor_control()
 {
-	//HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
-	//HAL_GPIO_TogglePin(GPIOD, LED_RED_Pin);
-	//HAL_Delay(500);
+	CAN_100();
+	CAN_50();
+	CAN_10();
+
 }
 

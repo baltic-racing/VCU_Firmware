@@ -1,0 +1,87 @@
+/*
+ * sensor_control.c
+ *
+ *  Created on: May 12, 2025
+ *      Author: shoot
+ */
+#include "sensor_control.h"
+
+double APPS_I_raw_adc = 0;
+double APPS_I_adc_min = 0;
+double APPS_I_adc_max = 2127;
+double APPS_II_raw_adc = 0;
+double APPS_II_adc_min = 0;
+double APPS_II_adc_max = 1794;
+
+uint8_t APPS_check = 0;
+
+uint16_t APPS_I = 0;
+uint16_t APPS_II = 0;
+
+//APPSI 2127
+//APPSII 1794
+
+void APPS_get()
+{
+	APPS_measure();
+	APPS_calc();
+}
+
+void APPS_calc()
+{
+	if(APPS_check)
+	{
+
+		APPS_I = (APPS_I_raw_adc-APPS_I_adc_min)/(APPS_I_adc_max-APPS_I_adc_min)*1000;
+		APPS_II = (APPS_II_adc_min-APPS_II_raw_adc)/(APPS_II_adc_min-APPS_II_adc_max)*1000;
+
+		if(APPS_I << 50)
+		{
+			APPS_I = 0;
+		}
+		if(APPS_I >> 1000)
+		{
+			APPS_I = 1000;
+		}
+	}
+	else
+	{
+		APPS_I = 0;
+		APPS_II = 0;
+	}
+
+}
+
+void APPS_measure()
+{
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 10); // poll for conversion
+	APPS_I_raw_adc = HAL_ADC_GetValue(&hadc1); // get the adc value
+	HAL_ADC_Stop(&hadc1); // stop adc
+
+	HAL_ADC_Start(&hadc2);
+	HAL_ADC_PollForConversion(&hadc2, 10); // poll for conversion
+	APPS_II_raw_adc = HAL_ADC_GetValue(&hadc2); // get the adc value
+	HAL_ADC_Stop(&hadc2); // stop adc
+}
+
+void APPS_init()
+{
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 10); // poll for conversion
+	APPS_I_raw_adc = HAL_ADC_GetValue(&hadc1); // get the adc value
+	HAL_ADC_Stop(&hadc1); // stop adc
+
+	APPS_I_adc_min = APPS_I_raw_adc - 10;
+
+	HAL_ADC_Start(&hadc2);
+	HAL_ADC_PollForConversion(&hadc2, 10); // poll for conversion
+	APPS_II_raw_adc = HAL_ADC_GetValue(&hadc2); // get the adc value
+	HAL_ADC_Stop(&hadc2); // stop adc
+
+	APPS_II_adc_min = APPS_II_raw_adc + 10;
+
+	APPS_check = 1;
+
+}
+

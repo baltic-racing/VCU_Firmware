@@ -11,8 +11,10 @@
 #include "main.h"
 #include "gpio.h"
 #include "can.h"
+#include "adc.h"
 
 void motor_control(void);
-
+void e_diff(void);
+int16_t calculate_ac_current(uint16_t limit, uint16_t value);
 
 #endif /* INC_MOTOR_CONTROL_H_ */

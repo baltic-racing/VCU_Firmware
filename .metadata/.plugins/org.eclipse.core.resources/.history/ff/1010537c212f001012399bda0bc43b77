@@ -1,0 +1,21 @@
+/*
+ * sensor_control.c
+ *
+ *  Created on: May 12, 2025
+ *      Author: shoot
+ */
+
+uint32_t APPS_I_raw_adc = 0;
+uint32_t APPS_I_adc_min = 0;
+
+
+void APPS_init()
+{
+	HAL_ADC_Start(hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 10); // poll for conversion
+	APPS_I_raw_adc = HAL_ADC_GetValue(&hadc1); // get the adc value
+	HAL_ADC_Stop(&hadc1); // stop adc
+
+	APPS_I_adc_min = APPS_I_raw_adc;
+}
+

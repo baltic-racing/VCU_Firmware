@@ -45,7 +45,8 @@ void MX_CAN2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t *TxData);
-//void CAN_RX(CAN_HandleTypeDef hcan, CAN_RxHeaderTypeDef RxHeader, uint8_t *RxData);
+void CAN_TX_INV(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData);
+void CAN_RX(CAN_HandleTypeDef hcan);
 //void CAN_interrupt(void);
 void CAN_50(void);
 void CAN_10(void);

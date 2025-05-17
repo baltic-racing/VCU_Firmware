@@ -99,7 +99,6 @@ int main(void)
   MX_CAN2_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-  //APPS_init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_CAN_Start(&hcan1);
@@ -111,12 +110,12 @@ int main(void)
 	  Error_Handler();
   }
 
-/*
+
   if (HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
   {
 	  Error_Handler();
   }
-*/
+
 
   /* USER CODE END 2 */
 

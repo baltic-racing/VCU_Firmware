@@ -15,7 +15,7 @@
 #include "math.h"
 #include "adc.h"
 
-
+void APPS_get(void);
 void APPS_init(void);
 void APPS_calc(void);
 void APPS_measure(void);

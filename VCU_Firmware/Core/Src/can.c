@@ -37,8 +37,8 @@ volatile uint8_t send_can_50_message = 0;
 volatile uint8_t send_can_10_message = 0;
 
 //CAN IDs of Inverters, 0x1F for Broadcasting
-const uint8_t Node_ID_INV_R = 10; //right
-const uint8_t Node_ID_INV_L = 20;	//left
+const uint8_t Node_ID_INV_R = 19; //right
+const uint8_t Node_ID_INV_L = 10;	//left
 const uint8_t INVX_SN = 0x1F; //(Broadcast)
 
 /* {StdId, ExtId, IDE, RTR, DLC}
@@ -59,7 +59,7 @@ const uint8_t INVX_SN = 0x1F; //(Broadcast)
  */
 
 // Header from DBC
-CAN_TxHeaderTypeDef VCU1_header_R = {((0x1 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+//CAN_TxHeaderTypeDef VCU1_header_R = {((0x1 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU2_header_R = {((0x2 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU3_header_R = {((0x3 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU4_header_R = {((0x4 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
@@ -67,11 +67,11 @@ CAN_TxHeaderTypeDef VCU5_header_R = {((0x5 << 5) | Node_ID_INV_L), 0, CAN_ID_STD
 CAN_TxHeaderTypeDef VCU6_header_R = {((0x6 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU8_header_R = {((0x8 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU9_header_R = {((0x9 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCUA_header_R = {((0x1A << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Ac current
+CAN_TxHeaderTypeDef VCUA_header_R = {((0x01 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Ac current
 CAN_TxHeaderTypeDef VCUB_header_R = {((0xB << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCUC_header_R = {((0xC << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
-CAN_TxHeaderTypeDef VCU1_header_L = {((0x1 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+//CAN_TxHeaderTypeDef VCU1_header_L = {((0x1 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU2_header_L = {((0x2 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU3_header_L = {((0x3 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU4_header_L = {((0x4 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
@@ -79,7 +79,7 @@ CAN_TxHeaderTypeDef VCU5_header_L = {((0x5 << 5) | Node_ID_INV_R), 0, CAN_ID_STD
 CAN_TxHeaderTypeDef VCU6_header_L = {((0x6 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU8_header_L = {((0x8 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU9_header_L = {((0x9 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCUA_header_L = {((0x1A << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	//    Set Ac current
+CAN_TxHeaderTypeDef VCUA_header_L = {((0x01 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	//    Set Ac current
 CAN_TxHeaderTypeDef VCUB_header_L = {((0xB << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCUC_header_L = {((0xC << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
@@ -150,6 +150,8 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 }
 */
 uint8_t r2d_bit = 0;
+uint8_t ts_on = 0;
+uint8_t ts_ready = 0;
 uint8_t SA = 0;
 
 void CAN_RX(CAN_HandleTypeDef hcan)
@@ -164,22 +166,22 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 	}
 
-	if(RxHeader.StdId == 0x600)
+	if(RxHeader.StdId == 0x500)
 	{
-		r2d_bit = RxData[4];
+		//r2d_bit = RxData[4];
+		r2d_bit = RxData[1];
+		ts_on = RxData[5]<<1;
 	}
 
 	if(RxHeader.StdId == 0x400)
 	{
 		SA = RxData[7];
 	}
-	/*
 
-	if(RxHeader.StdId == 0x400)
+	if(RxHeader.StdId == 0x200)
 	{
-		SAS = RxData[7];
+		ts_ready = RxData[6] >> 3 & 0x01;
 	}
-	*/
 }
 
 
@@ -224,39 +226,15 @@ void CAN_interrupt()
 void CAN_50()		// CAN Messages transmitted with 50 Hz
 {
 
-	test1[0] = 1;
-	test1[1] = 1;
-	test1[2] = 1;
-	test1[3] = 1;
-	test1[4] = 1;
-	test1[5] = 1;
-	test1[6] = 1;
-	test1[7] = 1;
-
 	if(send_can_50_message > 0)
 	{
 		send_can_50_message = 0;
-		/*
-		CAN_TX(hcan1, VCU1_header_R, test1);
-		CAN_TX(hcan1, VCU2_header_R, test2);
-		CAN_TX(hcan1, VCU3_header_R, test2);
-		CAN_TX(hcan1, VCU4_header_R, test2);
-		*/
 	}
 
 }
 
 void CAN_10()		// CAN Messages transmitted with 10 Hz
 {
-	test2[0] = 1;
-	test2[1] = 2;
-	test2[2] = 3;
-	test2[3] = 4;
-	test2[4] = 5;
-	test2[5] = 6;
-	test2[6] = 7;
-	test2[7] = 8;
-
 	if(send_can_10_message > 0)
 	{
 		send_can_10_message = 0;
@@ -276,7 +254,7 @@ void CAN_100()
 	test2[4] = 0;
 	test2[5] = 0;
 	test2[6] = SA;
-	test2[7] = r2d_bit;
+	test2[7] = ts_ready;
 
 	if(send_can_100_message > 0)
 	{
@@ -288,25 +266,6 @@ void CAN_100()
 
 		CAN_TX(hcan2, VCUA_header_L, AC_Current_L);
 		CAN_TX(hcan2, VCUA_header_R, AC_Current_R);
-		/*
-		CAN_TX(hcan1, VCU5_header_R, test2);
-
-		CAN_TX(hcan1, VCU6_header_R, test2);
-		CAN_TX(hcan1, VCU8_header_R, test2);
-		CAN_TX(hcan1, VCU9_header_R, test2);
-		CAN_TX(hcan1, VCUA_header_R, test2);
-		CAN_TX(hcan1, VCUB_header_R, test2);
-		CAN_TX(hcan1, VCUC_header_R, test2);
-
-		CAN_TX(hcan1, VCU5_header_L, test2);
-
-		CAN_TX(hcan1, VCU6_header_L, test2);
-		CAN_TX(hcan1, VCU8_header_L, test2);
-		CAN_TX(hcan1, VCU9_header_L, test2);
-		CAN_TX(hcan1, VCUA_header_L, test2);
-		CAN_TX(hcan1, VCUB_header_L, test2);
-		CAN_TX(hcan1, VCUC_header_L, test2);
-		*/
 	}
 }
 
@@ -331,8 +290,8 @@ void MX_CAN1_Init(void)
   hcan1.Init.Prescaler = 3;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_11TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_4TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
@@ -350,7 +309,7 @@ void MX_CAN1_Init(void)
     canfilterconfig.FilterActivation = CAN_FILTER_ENABLE;
     canfilterconfig.FilterBank = 0;  // which filter bank to use from the assigned ones
     canfilterconfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-    canfilterconfig.FilterIdHigh = 0x600<<5;
+    canfilterconfig.FilterIdHigh = 0x500<<5;
     canfilterconfig.FilterIdLow = 0;
     canfilterconfig.FilterMaskIdHigh = 0x7FF<<5;
     canfilterconfig.FilterMaskIdLow = 0x0000;
@@ -374,6 +333,19 @@ void MX_CAN1_Init(void)
 
     HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig1);
 
+    CAN_FilterTypeDef canfilterconfig2;
+    canfilterconfig2.FilterActivation = CAN_FILTER_ENABLE;
+    canfilterconfig2.FilterBank = 2;  // which filter bank to use from the assigned ones
+    canfilterconfig2.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+    canfilterconfig2.FilterIdHigh = 0x200<<5;
+    canfilterconfig2.FilterIdLow = 0;
+    canfilterconfig2.FilterMaskIdHigh = 0x7FF<<5;
+    canfilterconfig2.FilterMaskIdLow = 0x0000;
+    canfilterconfig2.FilterMode = CAN_FILTERMODE_IDMASK;
+    canfilterconfig2.FilterScale = CAN_FILTERSCALE_32BIT;
+    canfilterconfig2.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
+
+    HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig2);
 
 
   /* USER CODE END CAN1_Init 2 */

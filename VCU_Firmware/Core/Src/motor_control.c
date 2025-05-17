@@ -17,42 +17,62 @@ uint8_t lenkwinkel = 0;
 uint8_t safilter = 0;
 extern uint8_t SA;
 extern uint8_t r2d_bit;
+extern uint8_t ts_ready;
+extern uint8_t ts_on;
 extern uint16_t APPS_I;
+extern uint8_t APPS_check;
 uint32_t r2d_time = 0;
 uint8_t r2d_sound = 0;
 uint32_t r2d_time_duration = 2000;
+uint8_t prev_r2d_bit = 0;
+uint8_t start_motor_control = 0;
 
 void motor_control()
 {
 	CAN_100();
-	CAN_50();
-	CAN_10();
+	//CAN_50();
+	//CAN_10();
 
-	APPS_get();
-	//APPS_init();
+	if(!APPS_check && HAL_GetTick() > 1000)
+	{
+		APPS_init();
+	}
+
+	if(APPS_check)
+	{
+		APPS_get();
+	}
+
+
+	if(ts_ready)
+	{
+		if(!start_motor_control && r2d_bit)
+		{
+			start_motor_control = 1;
+		}
+	}
+	else
+	{
+		start_motor_control = 0;
+	}
+
 	e_diff();
 
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
 	//HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
-	/*
-	if(r2d_bit == 1 && r2d_sound == 0)
+
+	if(r2d_bit && !prev_r2d_bit)
 	{
 		r2d_sound = 1;
 		HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
-	}
-
-	if(r2d_sound == 0)
-	{
 		r2d_time = HAL_GetTick();
 	}
-
-	if(HAL_GetTick() - r2d_time >= r2d_time_duration)
+	if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)
 	{
 		 HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_RESET);
 		 r2d_sound = 0;
 	}
-	*/
-
+	prev_r2d_bit = r2d_bit;
 }
 
 
@@ -62,12 +82,10 @@ void e_diff()
 	uint8_t safilter = lenkwinkel;
 	//1xxxxxx && 0111111
 
-	if (r2d_bit == 1)
+	if (start_motor_control)
 	{
-
 		  if ((safilter) >10)
 			{
-
 				if ((SA>>7) == 1) //negative Lenkwinkel > links
 				{
 					ac_current_l = ((calculate_ac_current(current_limit, APPS_I))* (float) ((101-(lenkwinkel))))/100;
@@ -84,7 +102,6 @@ void e_diff()
 				ac_current_r =calculate_ac_current(current_limit, APPS_I);
 				ac_current_l =calculate_ac_current(current_limit, APPS_I);
 			}
-
 	}
 	else
 	{
@@ -96,7 +113,6 @@ void e_diff()
 	AC_Current_L[1] = ac_current_l;
 	AC_Current_R[0] = ac_current_r >> 8;
 	AC_Current_R[1] = ac_current_r;
-
 }
 
 int16_t calculate_ac_current(uint16_t limit, uint16_t value)

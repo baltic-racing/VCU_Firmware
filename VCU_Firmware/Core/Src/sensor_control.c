@@ -7,13 +7,15 @@
 #include "sensor_control.h"
 
 double APPS_I_raw_adc = 0;
-double APPS_I_adc_min = 650;
+//double APPS_I_adc_min = 700;
+double APPS_I_adc_min = 0;
 double APPS_I_adc_max = 2127;
 double APPS_II_raw_adc = 0;
-double APPS_II_adc_min = 3610;
+//double APPS_II_adc_min = 2850;
+double APPS_II_adc_min = 0;
 double APPS_II_adc_max = 1794;
 
-uint8_t APPS_check = 1;
+uint8_t APPS_check = 0;
 
 uint16_t APPS_I = 0;
 uint16_t APPS_II = 0;

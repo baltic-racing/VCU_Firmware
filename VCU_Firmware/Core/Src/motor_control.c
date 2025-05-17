@@ -30,6 +30,7 @@ uint8_t start_motor_control = 0;
 void motor_control()
 {
 	CAN_100();
+	CAN_2();
 	//CAN_50();
 	//CAN_10();
 
@@ -43,7 +44,6 @@ void motor_control()
 		APPS_get();
 	}
 
-
 	if(ts_ready)
 	{
 		if(!start_motor_control && r2d_bit)
@@ -56,23 +56,28 @@ void motor_control()
 		start_motor_control = 0;
 	}
 
+	if(start_motor_control)
+	{
+		if(r2d_bit && !prev_r2d_bit)
+		{
+			r2d_sound = 1;
+			HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
+			r2d_time = HAL_GetTick();
+		}
+
+		if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)
+		{
+			 HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_RESET);
+			 r2d_sound = 0;
+		}
+
+		prev_r2d_bit = r2d_bit;
+	}
+
 	e_diff();
 
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
 	//HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
-
-	if(r2d_bit && !prev_r2d_bit)
-	{
-		r2d_sound = 1;
-		HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
-		r2d_time = HAL_GetTick();
-	}
-	if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)
-	{
-		 HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_RESET);
-		 r2d_sound = 0;
-	}
-	prev_r2d_bit = r2d_bit;
 }
 
 

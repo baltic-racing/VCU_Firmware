@@ -32,7 +32,7 @@ Core/Src/sensor_control.o: ../Core/Src/sensor_control.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h \
  ../Core/Inc/gpio.h ../Core/Inc/can.h ../Core/Inc/motor_control.h \
- ../Core/Inc/adc.h
+ ../Core/Inc/adc.h ../Core/Inc/sensor_control.h
 ../Core/Inc/sensor_control.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
@@ -70,3 +70,4 @@ Core/Src/sensor_control.o: ../Core/Src/sensor_control.c \
 ../Core/Inc/can.h:
 ../Core/Inc/motor_control.h:
 ../Core/Inc/adc.h:
+../Core/Inc/sensor_control.h:

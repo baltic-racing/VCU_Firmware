@@ -12,6 +12,7 @@
 #include "gpio.h"
 #include "can.h"
 #include "adc.h"
+#include "sensor_control.h"
 
 void motor_control(void);
 void e_diff(void);

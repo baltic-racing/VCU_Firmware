@@ -31,7 +31,8 @@ Core/Src/motor_control.o: ../Core/Src/motor_control.c \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pwr_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h \
- ../Core/Inc/gpio.h ../Core/Inc/can.h ../Core/Inc/adc.h
+ ../Core/Inc/gpio.h ../Core/Inc/can.h ../Core/Inc/adc.h \
+ ../Core/Inc/sensor_control.h ../Core/Inc/motor_control.h
 ../Core/Inc/motor_control.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
@@ -68,3 +69,5 @@ Core/Src/motor_control.o: ../Core/Src/motor_control.c \
 ../Core/Inc/gpio.h:
 ../Core/Inc/can.h:
 ../Core/Inc/adc.h:
+../Core/Inc/sensor_control.h:
+../Core/Inc/motor_control.h:

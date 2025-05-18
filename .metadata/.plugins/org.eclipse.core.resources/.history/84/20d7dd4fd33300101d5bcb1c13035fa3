@@ -178,9 +178,9 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 	if(RxHeader.StdId == 0x500)
 	{
+		//r2d_bit = RxData[4];
 		r2d_bit = RxData[1];
 		ts_on = RxData[5]<<1;
-		//ts_ready = RxData[5]<<1; //r2d test
 	}
 
 	if(RxHeader.StdId == 0x400)

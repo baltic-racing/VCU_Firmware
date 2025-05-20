@@ -20,6 +20,7 @@
 #include "main.h"
 #include "adc.h"
 #include "can.h"
+#include "dma.h"
 #include "tim.h"
 #include "gpio.h"
 
@@ -27,6 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include "motor_control.h"
 #include "sensor_control.h"
+#include "stdbool.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,15 +96,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM2_Init();
+  MX_DMA_Init();
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_ADC1_Init();
+  MX_TIM2_Init();
   MX_ADC2_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
-  HAL_CAN_Start(&hcan1);
+  HAL_TIM_Base_Start(&htim5);
 
+  extern uint16_t apps_I_raw;
+  extern uint16_t apps_II_raw;
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&apps_I_raw, 1);
+  HAL_ADC_Start_DMA(&hadc2, (uint32_t*)&apps_II_raw, 1);
+
+  HAL_CAN_Start(&hcan1);
   HAL_CAN_Start(&hcan2);
 
   if (HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
@@ -115,7 +125,6 @@ int main(void)
   {
 	  Error_Handler();
   }
-
 
   /* USER CODE END 2 */
 

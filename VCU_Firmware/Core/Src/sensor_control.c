@@ -6,27 +6,61 @@
  */
 #include "sensor_control.h"
 
-double APPS_I_raw_adc = 0;
+#include "stdbool.h"
+
+uint16_t APPS_I_raw_adc = 0;
 //double APPS_I_adc_min = 700;
-double APPS_I_adc_min = 0;
-double APPS_I_adc_max = 2127;
-double APPS_II_raw_adc = 0;
+uint16_t APPS_I_adc_min = 0;
+uint16_t APPS_I_adc_max = 2127;
+uint16_t APPS_II_raw_adc = 0;
 //double APPS_II_adc_min = 2850;
-double APPS_II_adc_min = 0;
-double APPS_II_adc_max = 1794;
+uint16_t APPS_II_adc_min = 0;
+uint16_t APPS_II_adc_max = 1794;
 
 uint8_t APPS_check = 0;
 
 uint16_t APPS_I = 0;
 uint16_t APPS_II = 0;
 
-//APPSI 2127
-//APPSII 1794
+#define APPS_READ_TIMEOUT 100
+
+volatile uint16_t apps_I_raw = 0;
+volatile uint16_t apps_II_raw = 0;
+
+/*Plausibiltätscheck der Messwerte
+ * - Verbesserung gegen Rauschen
+ * - Stabilität und Sicherheit
+ */
+bool APPS_getValues(uint16_t* apps_I, uint16_t* apps_II)
+{
+    uint16_t i1, i2, ii1, ii2;
+    uint32_t count = 0;
+
+    do {
+        i1 = apps_I_raw;
+        i2 = apps_I_raw;
+        count++;
+        if (count > APPS_READ_TIMEOUT) return false;
+    } while (i1 != i2);
+
+    count = 0;
+
+    do {
+        ii1 = apps_II_raw;
+        ii2 = apps_II_raw;
+        count++;
+        if (count > APPS_READ_TIMEOUT) return false;
+    } while (ii1 != ii2);
+
+    *apps_I = i1;
+    *apps_II = ii1;
+    return true;
+}
 
 void APPS_get()
 {
-	APPS_measure();
-	APPS_calc();
+	  APPS_getValues(&APPS_I_raw_adc, &APPS_II_raw_adc);
+	  APPS_calc();
 }
 
 void APPS_calc()
@@ -43,8 +77,10 @@ void APPS_calc()
 		{
 			APPS_II_raw_adc = APPS_II_adc_min;
 		}
-		APPS_I = (APPS_I_raw_adc-APPS_I_adc_min)/(APPS_I_adc_max-APPS_I_adc_min)*1000;
-		APPS_II = (APPS_II_adc_min-APPS_II_raw_adc)/(APPS_II_adc_min-APPS_II_adc_max)*1000;
+		//APPS_I = (uint16_t)((uint32_t)(APPS_I_raw_adc-APPS_I_adc_min)*1000)/(APPS_I_adc_max-APPS_I_adc_min);
+		//APPS_II = (APPS_II_adc_min-APPS_II_raw_adc)/(APPS_II_adc_min-APPS_II_adc_max)*1000;
+		APPS_I = (uint16_t)(((uint32_t)(APPS_I_raw_adc - APPS_I_adc_min) * 1000) / (APPS_I_adc_max - APPS_I_adc_min));
+		APPS_II = (uint16_t)(((uint32_t)(APPS_II_adc_min - APPS_II_raw_adc) * 1000) / (APPS_II_adc_min - APPS_II_adc_max));
 
 		if(APPS_I < 50)
 		{
@@ -78,6 +114,11 @@ void APPS_measure()
 
 void APPS_init()
 {
+	/*
+	  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&apps_I_raw, 1);
+	  HAL_ADC_Start_DMA(&hadc2, (uint32_t*)&apps_II_raw, 1);
+	  */
+	/*
 	HAL_ADC_Start(&hadc1);
 	HAL_ADC_PollForConversion(&hadc1, 100); // poll for conversion
 	APPS_I_raw_adc = HAL_ADC_GetValue(&hadc1); // get the adc value
@@ -90,6 +131,13 @@ void APPS_init()
 	APPS_II_raw_adc = HAL_ADC_GetValue(&hadc2); // get the adc value
 	HAL_ADC_Stop(&hadc2); // stop adc
 
+	APPS_II_adc_min = APPS_II_raw_adc + 10;
+
+*/
+	APPS_getValues(&APPS_I_raw_adc, &APPS_II_raw_adc);
+
+	// 10 fungiert als Filter gegen Schwankungen
+	APPS_I_adc_min = APPS_I_raw_adc - 10;
 	APPS_II_adc_min = APPS_II_raw_adc + 10;
 
 	APPS_check = 1;

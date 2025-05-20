@@ -1,4 +1,5 @@
-../Core/Src/sensor_control.c:26:6:APPS_get	8	static
-../Core/Src/sensor_control.c:32:6:APPS_calc	4	static
-../Core/Src/sensor_control.c:66:6:APPS_measure	8	static
-../Core/Src/sensor_control.c:79:6:APPS_init	8	static
+../Core/Src/sensor_control.c:30:6:APPS_getValues	32	static
+../Core/Src/sensor_control.c:56:6:APPS_get	8	static
+../Core/Src/sensor_control.c:62:6:APPS_calc	4	static
+../Core/Src/sensor_control.c:98:6:APPS_measure	8	static
+../Core/Src/sensor_control.c:111:6:APPS_init	8	static

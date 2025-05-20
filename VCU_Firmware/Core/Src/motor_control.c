@@ -31,8 +31,6 @@ void motor_control()
 {
 	CAN_100();
 	CAN_2();
-	//CAN_50();
-	//CAN_10();
 
 	if(!APPS_check && HAL_GetTick() > 1000)
 	{

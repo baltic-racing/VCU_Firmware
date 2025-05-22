@@ -29,6 +29,9 @@ uint8_t r2d_bit = 0;
 uint8_t ts_on = 0;
 uint8_t ts_ready = 0;
 uint8_t SA = 0;
+uint8_t recu_active = 0;
+
+uint16_t brake_current = 750;
 
 uint16_t motor_temp_r = 0;
 uint16_t inv_temp_r = 0;
@@ -37,6 +40,9 @@ uint16_t inv_temp_l = 0;
 
 uint8_t AC_Current_L[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t AC_Current_R[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t Brake_Current_L[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t Brake_Current_R[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t Brake_Current_broadcast[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t INV_L_INV_Motor_fault[8] = {0};
 uint8_t INV_R_INV_Motor_fault[8] = {0};
 
@@ -72,29 +78,32 @@ const uint8_t INVX_SN = 0x1F; //(Broadcast)
  */
 
 // Header from DBC
-//CAN_TxHeaderTypeDef VCU1_header_R = {((0x1 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU2_header_R = {((0x2 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU3_header_R = {((0x3 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU4_header_R = {((0x4 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU5_header_R = {((0x5 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU6_header_R = {((0x6 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU8_header_R = {((0x8 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU9_header_R = {((0x9 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCUA_header_R = {((0x01 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Ac current
-CAN_TxHeaderTypeDef VCUB_header_R = {((0xB << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCUC_header_R = {((0xC << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU1_header_R = {((0x01 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Ac current
+CAN_TxHeaderTypeDef VCU2_header_R = {((0x02 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU3_header_R = {((0x03 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU4_header_R = {((0x04 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU5_header_R = {((0x05 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU6_header_R = {((0x06 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU8_header_R = {((0x08 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU9_header_R = {((0x09 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUA_header_R = {((0x0A << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUB_header_R = {((0x0B << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUC_header_R = {((0x0C << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
-//CAN_TxHeaderTypeDef VCU1_header_L = {((0x1 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU2_header_L = {((0x2 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU3_header_L = {((0x3 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU4_header_L = {((0x4 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU5_header_L = {((0x5 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU6_header_L = {((0x6 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU8_header_L = {((0x8 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCU9_header_L = {((0x9 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCUA_header_L = {((0x01 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	//    Set Ac current
-CAN_TxHeaderTypeDef VCUB_header_L = {((0xB << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-CAN_TxHeaderTypeDef VCUC_header_L = {((0xC << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU1_header_L = {((0x01 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Ac current
+CAN_TxHeaderTypeDef VCU2_header_L = {((0x02 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU3_header_L = {((0x03 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU4_header_L = {((0x04 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU5_header_L = {((0x05 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU6_header_L = {((0x06 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU8_header_L = {((0x08 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCU9_header_L = {((0x09 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUA_header_L = {((0x0A << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUB_header_L = {((0x0B << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef VCUC_header_L = {((0x0C << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+CAN_TxHeaderTypeDef VCU1_header_Broadcast = {((0x01 << 5) | INVX_SN), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Ac current broadcast
+CAN_TxHeaderTypeDef VCU2_header_Broadcast = {((0x02 << 5) | INVX_SN), 0, CAN_ID_STD, CAN_RTR_DATA, 8};	// Set Brake current broadcast
 
 CAN_TxHeaderTypeDef VCU_header = {0x300, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU_INV3_header_L = {((0x22 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
@@ -174,6 +183,11 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
 	{
 
+	}
+
+	if(RxHeader.StdId == 0x750)
+	{
+		recu_active = RxData[2];
 	}
 
 	if(RxHeader.StdId == 0x500)
@@ -301,6 +315,8 @@ void CAN_10()		// CAN Messages transmitted with 10 Hz
 
 extern uint16_t APPS_I;
 extern uint16_t APPS_II;
+extern uint8_t lenkwinkel;
+
 void CAN_100()
 {
 	test2[0] = APPS_I;
@@ -308,8 +324,8 @@ void CAN_100()
 	test2[2] = APPS_II;
 	test2[3] = APPS_II >> 8;
 	test2[4] = 0;
-	test2[5] = 0;
-	test2[6] = SA;
+	test2[5] = recu_active;
+	test2[6] = lenkwinkel;
 	test2[7] = ts_ready;
 
 	if(send_can_100_message > 0)
@@ -320,11 +336,27 @@ void CAN_100()
 		CAN_TX(hcan1, VCU_header, test2);
 		//CAN_TX_INV(hcan2, VCU_header, test2);
 
+		/*
 		AC_Current_L[6] = inv_temp_l >> 8;
 		AC_Current_L[7] = inv_temp_l;
+		*/
 
-		CAN_TX(hcan2, VCUA_header_L, AC_Current_L);
-		CAN_TX(hcan2, VCUA_header_R, AC_Current_R);
+		  //Rekuperation
+			if(APPS_I < 50 && recu_active == 1)
+			{
+				Brake_Current_broadcast[0] = brake_current >> 8;
+				Brake_Current_broadcast[1] = brake_current;
+				CAN_TX(hcan2, VCU2_header_R, Brake_Current_broadcast);
+				CAN_TX(hcan2, VCU2_header_L, Brake_Current_broadcast);
+			}
+			else
+			{
+				Brake_Current_broadcast[0] = 0;
+				Brake_Current_broadcast[1] = 0;
+				CAN_TX(hcan2, VCU1_header_L, AC_Current_L);
+				CAN_TX(hcan2, VCU1_header_R, AC_Current_R);
+			}
+		//CAN_TX(hcan2, VCU2_header_Broadcast, Brake_Current_broadcast);
 	}
 }
 
@@ -406,6 +438,19 @@ void MX_CAN1_Init(void)
 
     HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig2);
 
+    CAN_FilterTypeDef canfilterconfig3;
+    canfilterconfig3.FilterActivation = CAN_FILTER_ENABLE;
+    canfilterconfig3.FilterBank = 3;  // which filter bank to use from the assigned ones
+    canfilterconfig3.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+    canfilterconfig3.FilterIdHigh = 0x750<<5;
+    canfilterconfig3.FilterIdLow = 0;
+    canfilterconfig3.FilterMaskIdHigh = 0x7FF<<5;
+    canfilterconfig3.FilterMaskIdLow = 0x0000;
+    canfilterconfig3.FilterMode = CAN_FILTERMODE_IDMASK;
+    canfilterconfig3.FilterScale = CAN_FILTERSCALE_32BIT;
+    canfilterconfig3.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
+
+    HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig3);
 
   /* USER CODE END CAN1_Init 2 */
 

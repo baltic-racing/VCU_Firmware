@@ -1,0 +1,191 @@
+/*
+ * motor_control.c
+ *
+ *  Created on: Mar 28, 2025
+ *      Author: racin
+ */
+#include "motor_control.h"
+#include "stdlib.h"
+#include "stdbool.h"
+
+extern uint8_t AC_Current_L[8];
+extern uint8_t AC_Current_R[8];
+extern uint8_t Brake_Current_L[8];
+extern uint8_t Brake_Current_R[8];
+extern uint8_t Brake_Current_broadcast[8];
+
+//a = 0.069 und b = 69
+float steering_ac_current_reduction_table[101] = {	0.992,0.991,0.990,0.990,0.989,0.988,0.987,0.986,0.985,0.984,
+													0.983,0.982,0.981,0.979,0.978,0.976,0.975,0.973,0.971,0.969,
+													0.967,0.965,0.962,0.960,0.957,0.954,0.951,0.948,0.944,0.940,
+													0.936,0.932,0.928,0.923,0.918,0.913,0.907,0.901,0.895,0.888,
+													0.881,0.873,0.866,0.857,0.849,0.840,0.830,0.820,0.810,0.799,
+													0.788,0.776,0.764,0.751,0.738,0.724,0.710,0.696,0.681,0.666,
+													0.650,0.635,0.618,0.602,0.585,0.569,0.552,0.534,0.517,0.500,
+													0.483,0.466,0.448,0.431,0.415,0.398,0.382,0.365,0.350,0.334,
+													0.319,0.304,0.290,0.276,0.262,0.249,0.236,0.224,0.212,0.201,
+													0.190,0.180,0.170,0.160,0.151,0.143,0.134,0.127,0.119,0.112,
+													0.105};
+
+//a = 0.1 und b = 75
+float steering_brake_current_reduction_table[101] = {	0.999,0.999,0.999,0.999,0.999,0.999,0.999,0.999,0.999,0.999,
+														0.998,0.998,0.998,0.998,0.998,0.998,0.997,0.997,0.997,0.996,
+														0.996,0.996,0.995,0.995,0.994,0.993,0.993,0.992,0.991,0.990,
+														0.989,0.988,0.987,0.985,0.984,0.982,0.980,0.978,0.976,0.973,
+														0.971,0.968,0.964,0.961,0.957,0.953,0.948,0.943,0.937,0.931,
+														0.924,0.917,0.909,0.900,0.891,0.881,0.870,0.858,0.846,0.832,
+														0.818,0.802,0.786,0.769,0.750,0.731,0.711,0.690,0.668,0.646,
+														0.622,0.599,0.574,0.550,0.525,0.500,0.475,0.450,0.426,0.401,
+														0.378,0.354,0.332,0.310,0.289,0.269,0.250,0.231,0.214,0.198,
+														0.182,0.168,0.154,0.142,0.130,0.119,0.109,0.100,0.091,0.083,
+														0.076};
+
+
+uint16_t current_limit = 3000;	//in mA
+uint16_t brake_current_limit = 1000; // mA
+uint16_t ac_current_r = 0;
+uint16_t ac_current_l = 0;
+uint16_t ac_current = 0;
+uint16_t brake_current_r = 0;
+uint16_t brake_current_l = 0;
+uint16_t brake_current = 0;
+uint8_t lenkwinkel = 0;
+uint8_t safilter = 0;
+extern uint8_t SA;
+extern uint8_t r2d_bit;
+extern uint8_t ts_ready;
+extern uint8_t ts_on;
+extern uint16_t APPS_I;
+extern uint8_t APPS_check;
+extern uint8_t recu_active;
+extern uint16_t brake_pressure_front;
+
+uint32_t r2d_time = 0;
+uint8_t r2d_sound = 0;
+uint32_t r2d_time_duration = 2000;
+uint8_t prev_r2d_bit = 0;
+uint8_t start_motor_control = 1;
+
+void motor_control()
+{
+	CAN_100();
+	CAN_2();
+
+	if(!APPS_check && HAL_GetTick() > 1000)
+	{
+		APPS_init();
+	}
+
+	if(APPS_check)
+	{
+		APPS_get();
+	}
+
+	if(ts_ready)
+	{
+		if(!start_motor_control && r2d_bit)
+		{
+			start_motor_control = 1;
+			r2d_sound = 1;
+			HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
+			r2d_time = HAL_GetTick();
+
+		}
+
+		if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)
+		{
+			 HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_RESET);
+			 r2d_sound = 0;
+		}
+
+	}
+	else
+	{
+		//start_motor_control = 0;
+	}
+
+	e_diff();
+
+	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
+}
+
+
+void e_diff()
+{
+	//twos complement
+	if(SA >> 7 == 1)
+	{
+		lenkwinkel = ~SA + 1;
+	}
+	else
+	{
+		lenkwinkel = SA;
+	}
+
+	uint8_t safilter = lenkwinkel;
+
+	if (start_motor_control)
+	{
+		ac_current = calculate_ac_current(current_limit, APPS_I);
+		brake_current = calculate_brake_current(brake_current_limit, );
+
+		  if ((safilter) > 10)
+			{
+				if ((SA>>7) == 1) //negative Lenkwinkel > links
+				{
+					/*
+					ac_current_l = ac_current * (float) ((101-(lenkwinkel))))/100;
+					ac_current_r = ac_current;
+					*/
+					ac_current_l = (uint16_t)(ac_current * steering_ac_current_reduction_table[lenkwinkel]);
+					ac_current_r = ac_current;
+					brake_current_l = (uint16_t)(brake_current * steering_brake_current_reduction_table[lenkwinkel]);
+					brake_current_r = brake_current;
+				}
+				else if((SA>>7) == 0) //positive Lenkwinkel > rechts
+				{
+					/*
+					ac_current_r = ac_current * (float) ((101-(lenkwinkel))))/100;
+					ac_current_l = ac_current;
+					*/
+					ac_current_r = (uint16_t)(ac_current * steering_ac_current_reduction_table[lenkwinkel]);
+					ac_current_l = ac_current;
+					brake_current_r = (uint16_t)(brake_current * steering_brake_current_reduction_table[lenkwinkel]);
+					brake_current_l = brake_current;
+				}
+			}
+			else
+			{
+				ac_current_r = ac_current;
+				ac_current_l = ac_current;
+			}
+	}
+	else
+	{
+		ac_current_r = 0;
+		ac_current_l = 0;
+		brake_current_r = 0;
+		brake_current_l = 0;
+	}
+
+	AC_Current_L[0] = ac_current_l >> 8;
+	AC_Current_L[1] = ac_current_l;
+	AC_Current_R[0] = ac_current_r >> 8;
+	AC_Current_R[1] = ac_current_r;
+
+	Brake_Current_L[0] = brake_current_l >> 8;
+	Brake_Current_L[1] = brake_current_l;
+	Brake_Current_R[0] = brake_current_r >> 8;
+	Brake_Current_R[0] = brake_current_r;
+}
+
+int16_t calculate_ac_current(uint16_t limit, uint16_t value)
+{
+	return (int16_t)((float)limit * ((float)value/10));
+}
+
+int16_t calculate_brake_current(uint16_t limit, uint16_t value)
+{
+	return (int16_t)((float)limit * ((float)value/10));
+}

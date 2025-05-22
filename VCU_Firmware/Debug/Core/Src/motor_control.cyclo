@@ -1,3 +1,4 @@
-../Core/Src/motor_control.c:33:6:motor_control	9
-../Core/Src/motor_control.c:100:6:e_diff	6
-../Core/Src/motor_control.c:152:9:calculate_ac_current	1
+../Core/Src/motor_control.c:69:6:motor_control	9
+../Core/Src/motor_control.c:114:6:e_diff	6
+../Core/Src/motor_control.c:187:9:calculate_ac_current	1
+../Core/Src/motor_control.c:192:9:calculate_brake_current	1

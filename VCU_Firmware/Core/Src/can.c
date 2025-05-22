@@ -31,7 +31,9 @@ uint8_t ts_ready = 0;
 uint8_t SA = 0;
 uint8_t recu_active = 0;
 
-uint16_t brake_current = 750;
+uint16_t brake_pressure_front = 0;
+
+extern uint16_t brake_current;
 
 uint16_t motor_temp_r = 0;
 uint16_t inv_temp_r = 0;
@@ -202,6 +204,11 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 		SA = RxData[7];
 	}
 
+	if(RxHeader.StdId == 0x401)
+	{
+		brake_pressure_front = ((uint16_t)RxData[1] << 8) | RxData[0];
+	}
+
 	if(RxHeader.StdId == 0x200)
 	{
 		ts_ready = RxData[6] >> 3 & 0x01;
@@ -323,8 +330,8 @@ void CAN_100()
 	test2[1] = APPS_I >> 8;
 	test2[2] = APPS_II;
 	test2[3] = APPS_II >> 8;
-	test2[4] = 0;
-	test2[5] = recu_active;
+	test2[4] = brake_pressure_front >> 8;
+	test2[5] = brake_pressure_front;
 	test2[6] = lenkwinkel;
 	test2[7] = ts_ready;
 
@@ -342,12 +349,10 @@ void CAN_100()
 		*/
 
 		  //Rekuperation
-			if(APPS_I < 50 && recu_active == 1)
+			if(APPS_I < 50 && recu_active == 1 && brake_pressure_front > 10)
 			{
-				Brake_Current_broadcast[0] = brake_current >> 8;
-				Brake_Current_broadcast[1] = brake_current;
-				CAN_TX(hcan2, VCU2_header_R, Brake_Current_broadcast);
-				CAN_TX(hcan2, VCU2_header_L, Brake_Current_broadcast);
+				CAN_TX(hcan2, VCU2_header_R, Brake_Current_R);
+				CAN_TX(hcan2, VCU2_header_L, Brake_Current_L);
 			}
 			else
 			{
@@ -416,7 +421,7 @@ void MX_CAN1_Init(void)
     canfilterconfig1.FilterFIFOAssignment = CAN_FILTER_FIFO0;
     canfilterconfig1.FilterIdHigh = 0x400<<5;
     canfilterconfig1.FilterIdLow = 0;
-    canfilterconfig1.FilterMaskIdHigh = 0x7FF<<5;
+    canfilterconfig1.FilterMaskIdHigh = 0x7FE<<5; //erstes Bit wird nicht geprüft
     canfilterconfig1.FilterMaskIdLow = 0x0000;
     canfilterconfig1.FilterMode = CAN_FILTERMODE_IDMASK;
     canfilterconfig1.FilterScale = CAN_FILTERSCALE_32BIT;

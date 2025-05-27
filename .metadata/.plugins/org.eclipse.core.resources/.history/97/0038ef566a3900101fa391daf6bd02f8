@@ -1,0 +1,32 @@
+/*
+ * sensor_control.c
+ *
+ *  Created on: May 12, 2025
+ *      Author: shoot
+ */
+#include "sensor_control.h"
+
+#include "stdbool.h"
+
+uint16_t ADC_DMS_raw = 0;
+
+void APPS_get()
+{
+	  APPS_measure();
+	  APPS_calc();
+}
+
+void APPS_calc()
+{
+
+}
+
+void APPS_measure()
+{
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 10); // poll for conversion
+	ADC_DMS_raw = HAL_ADC_GetValue(&hadc1); // get the adc value
+	HAL_ADC_Stop(&hadc1); // stop adc
+}
+
+

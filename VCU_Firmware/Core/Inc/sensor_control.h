@@ -1,0 +1,23 @@
+/*
+ * sensor_control.h
+ *
+ *  Created on: May 12, 2025
+ *      Author: shoot
+ */
+
+#ifndef INC_SENSOR_CONTROL_H_
+#define INC_SENSOR_CONTROL_H_
+
+#include "main.h"
+#include "gpio.h"
+#include "can.h"
+#include "motor_control.h"
+#include "math.h"
+#include "adc.h"
+
+void APPS_get(void);
+void APPS_init(void);
+void APPS_calc(void);
+void APPS_measure(void);
+
+#endif /* INC_SENSOR_CONTROL_H_ */

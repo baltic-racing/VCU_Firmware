@@ -1,0 +1,427 @@
+15:48:23 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/can.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/can.d" -MT"Core/Src/can.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/can.o"
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25944	    140	   2192	  28276	   6e74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+15:48:26 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25944	    140	   2192	  28276	   6e74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:48:31 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25944	    140	   2192	  28276	   6e74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:54:05 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25944	    140	   2192	  28276	   6e74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+15:54:38 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25944	    140	   2192	  28276	   6e74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:56:20 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/can.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/can.d" -MT"Core/Src/can.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/can.o"
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25920	    140	   2200	  28260	   6e64	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+15:59:36 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25936	    140	   2208	  28284	   6e7c	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:05:40 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25040	    140	   2208	  27388	   6afc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:06:00 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25024	    140	   2208	  27372	   6aec	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:21:34 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25024	    140	   2208	  27372	   6aec	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+16:22:19 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25040	    140	   2208	  27388	   6afc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:27:16 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25040	    140	   2208	  27388	   6afc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+16:27:33 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25040	    140	   2208	  27388	   6afc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+16:42:29 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25024	    140	   2208	  27372	   6aec	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:45:58 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25024	    140	   2208	  27372	   6aec	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:47:18 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25032	    140	   2208	  27380	   6af4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:48:06 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25032	    140	   2208	  27380	   6af4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:48:47 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25032	    140	   2208	  27380	   6af4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:50:51 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25032	    140	   2208	  27380	   6af4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+16:57:56 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25048	    140	   2208	  27396	   6b04	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:11:24 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  26072	    140	   2208	  28420	   6f04	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:12:40 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25168	    140	   2208	  27516	   6b7c	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:13:27 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25160	    140	   2208	  27508	   6b74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:21:06 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  25160	    140	   2208	  27508	   6b74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+17:50:18 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25160	    140	   2208	  27508	   6b74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:51:23 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25160	    140	   2208	  27508	   6b74	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:54:30 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25200	    140	   2208	  27548	   6b9c	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:55:30 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25208	    140	   2208	  27556	   6ba4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:58:57 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25208	    140	   2208	  27556	   6ba4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+17:59:25 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25208	    140	   2208	  27556	   6ba4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+18:00:11 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25208	    140	   2208	  27556	   6ba4	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+18:01:16 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25200	    140	   2208	  27548	   6b9c	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+18:05:08 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/can.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/can.d" -MT"Core/Src/can.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/can.o"
+arm-none-eabi-gcc "../Core/Src/sensor_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/sensor_control.d" -MT"Core/Src/sensor_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/sensor_control.o"
+../Core/Src/can.c: In function 'CAN_100':
+../Core/Src/can.c:174:20: error: 'Force' undeclared (first use in this function)
+  174 |         test2[0] = Force >> 8;
+      |                    ^~~~~
+../Core/Src/can.c:174:20: note: each undeclared identifier is reported only once for each function it appears in
+make: *** [Core/Src/subdir.mk:52: Core/Src/can.o] Error 1
+make: *** Waiting for unfinished jobs....
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+18:05:20 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/can.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/can.d" -MT"Core/Src/can.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/can.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  25104	    140	   2208	  27452	   6b3c	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 

@@ -1,0 +1,19 @@
+/*
+ * motor_control.h
+ *
+ *  Created on: Mar 28, 2025
+ *      Author: racin
+ */
+
+#ifndef INC_MOTOR_CONTROL_H_
+#define INC_MOTOR_CONTROL_H_
+
+#include "main.h"
+#include "gpio.h"
+#include "can.h"
+#include "adc.h"
+#include "sensor_control.h"
+
+void motor_control(void);
+
+#endif /* INC_MOTOR_CONTROL_H_ */

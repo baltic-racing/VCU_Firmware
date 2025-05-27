@@ -1,0 +1,47 @@
+/*
+ * sensor_control.c
+ *
+ *  Created on: May 12, 2025
+ *      Author: shoot
+ */
+#include "sensor_control.h"
+
+#include "stdbool.h"
+#include "math.h"
+
+uint16_t ADC_DMS_raw = 0;
+double  ADC_2_V = 0;
+
+uint8_t R = 14;
+uint8_t r = 12;
+int64_t Force = 0;
+
+double E_modul = 210e6;
+double random_factor = 154e-9;
+double probe_calc = 0;
+
+void APPS_get()
+{
+	  APPS_measure();
+	  APPS_calc();
+}
+
+void APPS_calc()
+{
+
+}
+
+void APPS_measure()
+{
+	HAL_ADC_Start(&hadc1);
+	HAL_ADC_PollForConversion(&hadc1, 100); // poll for conversion
+	ADC_DMS_raw = HAL_ADC_GetValue(&hadc1); // get the adc value
+	HAL_ADC_Stop(&hadc1); // stop adc
+
+	ADC_2_V = (3.3*ADC_DMS_raw*3/4095.0);
+	probe_calc = ((ADC_2_V-5)/1);
+
+	Force = random_factor * (pow(R,2)- pow(r,2))*E_modul* probe_calc;
+}
+
+

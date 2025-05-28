@@ -145,6 +145,11 @@ void e_diff()
 			{
 				if ((SA>>7) == 1) //negative Lenkwinkel > links
 				{
+
+					/*
+					ac_current_l = ac_current * (float) ((101-(lenkwinkel)))/100;
+					ac_current_r = ac_current;
+*/
 					ac_current_l = (uint16_t)(ac_current * steering_ac_current_reduction_table[lenkwinkel]);
 					ac_current_r = ac_current;
 					brake_current_r = (uint16_t)(brake_current * steering_brake_current_reduction_table[lenkwinkel]);
@@ -152,6 +157,11 @@ void e_diff()
 				}
 				else if((SA>>7) == 0) //positive Lenkwinkel > rechts
 				{
+					/*
+					ac_current_r = ac_current * (float) ((101-(lenkwinkel)))/100;
+					ac_current_l = ac_current;
+*/
+
 					ac_current_r = (uint16_t)(ac_current * steering_ac_current_reduction_table[lenkwinkel]);
 					ac_current_l = ac_current;
 					brake_current_l = (uint16_t)(brake_current * steering_brake_current_reduction_table[lenkwinkel]);

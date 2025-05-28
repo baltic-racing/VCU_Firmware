@@ -76,8 +76,7 @@ void APPS_calc()
 		{
 			APPS_II_raw_adc = APPS_II_adc_min;
 		}
-		//APPS_I = (uint16_t)((uint32_t)(APPS_I_raw_adc-APPS_I_adc_min)*1000)/(APPS_I_adc_max-APPS_I_adc_min);
-		//APPS_II = (APPS_II_adc_min-APPS_II_raw_adc)/(APPS_II_adc_min-APPS_II_adc_max)*1000;
+
 		APPS_I = (uint16_t)(((uint32_t)(APPS_I_raw_adc - APPS_I_adc_min) * 1000) / (APPS_I_adc_max - APPS_I_adc_min));
 		APPS_II = (uint16_t)(((uint32_t)(APPS_II_adc_min - APPS_II_raw_adc) * 1000) / (APPS_II_adc_min - APPS_II_adc_max));
 
@@ -112,26 +111,6 @@ void APPS_measure()
 
 void APPS_init()
 {
-	/*
-	  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&apps_I_raw, 1);
-	  HAL_ADC_Start_DMA(&hadc2, (uint32_t*)&apps_II_raw, 1);
-	  */
-	/*
-	HAL_ADC_Start(&hadc1);
-	HAL_ADC_PollForConversion(&hadc1, 100); // poll for conversion
-	APPS_I_raw_adc = HAL_ADC_GetValue(&hadc1); // get the adc value
-	HAL_ADC_Stop(&hadc1); // stop adc
-
-	APPS_I_adc_min = APPS_I_raw_adc - 10;
-
-	HAL_ADC_Start(&hadc2);
-	HAL_ADC_PollForConversion(&hadc2, 100); // poll for conversion
-	APPS_II_raw_adc = HAL_ADC_GetValue(&hadc2); // get the adc value
-	HAL_ADC_Stop(&hadc2); // stop adc
-
-	APPS_II_adc_min = APPS_II_raw_adc + 10;
-
-*/
 	APPS_getValues(&APPS_I_raw_adc, &APPS_II_raw_adc);
 
 	// 10 fungiert als Filter gegen Schwankungen

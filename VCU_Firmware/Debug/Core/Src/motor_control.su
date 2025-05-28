@@ -1,4 +1,4 @@
-../Core/Src/motor_control.c:69:6:motor_control	8	static
-../Core/Src/motor_control.c:114:6:e_diff	16	static
-../Core/Src/motor_control.c:187:9:calculate_ac_current	16	static
-../Core/Src/motor_control.c:192:9:calculate_brake_current	16	static
+../Core/Src/motor_control.c:82:6:motor_control	8	static
+../Core/Src/motor_control.c:127:6:e_diff	16	static
+../Core/Src/motor_control.c:200:9:calculate_ac_current	16	static
+../Core/Src/motor_control.c:205:9:calculate_brake_current	16	static

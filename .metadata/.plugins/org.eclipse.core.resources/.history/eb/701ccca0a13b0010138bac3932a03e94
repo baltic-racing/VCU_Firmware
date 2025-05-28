@@ -28,7 +28,7 @@ float steering_ac_current_reduction_table[101] = {	0.992,0.991,0.990,0.990,0.989
 													0.190,0.180,0.170,0.160,0.151,0.143,0.134,0.127,0.119,0.112,
 													0.105};*/
 
-//a = 0.05 und b = 75
+//a = 0.069 und b = 69
 float steering_ac_current_reduction_table[101] = {	0.977,0.976,0.975,0.973,0.972,0.971,0.969,0.968,0.966,0.964,
 													0.963,0.961,0.959,0.957,0.955,0.953,0.950,0.948,0.945,0.943,
 													0.940,0.937,0.934,0.931,0.928,0.924,0.921,0.917,0.913,0.909,
@@ -103,6 +103,7 @@ void motor_control()
 			r2d_sound = 1;
 			HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
 			r2d_time = HAL_GetTick();
+
 		}
 
 		if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)
@@ -110,6 +111,7 @@ void motor_control()
 			 HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_RESET);
 			 r2d_sound = 0;
 		}
+
 	}
 	else
 	{
@@ -119,6 +121,7 @@ void motor_control()
 	e_diff();
 
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
 }
 
 
@@ -145,6 +148,11 @@ void e_diff()
 			{
 				if ((SA>>7) == 1) //negative Lenkwinkel > links
 				{
+
+					/*
+					ac_current_l = ac_current * (float) ((101-(lenkwinkel)))/100;
+					ac_current_r = ac_current;
+*/
 					ac_current_l = (uint16_t)(ac_current * steering_ac_current_reduction_table[lenkwinkel]);
 					ac_current_r = ac_current;
 					brake_current_r = (uint16_t)(brake_current * steering_brake_current_reduction_table[lenkwinkel]);
@@ -152,6 +160,11 @@ void e_diff()
 				}
 				else if((SA>>7) == 0) //positive Lenkwinkel > rechts
 				{
+					/*
+					ac_current_r = ac_current * (float) ((101-(lenkwinkel)))/100;
+					ac_current_l = ac_current;
+*/
+
 					ac_current_r = (uint16_t)(ac_current * steering_ac_current_reduction_table[lenkwinkel]);
 					ac_current_l = ac_current;
 					brake_current_l = (uint16_t)(brake_current * steering_brake_current_reduction_table[lenkwinkel]);

@@ -291,11 +291,16 @@ void CAN_interrupt()
 
 void CAN_2()		// CAN Messages transmitted with 2 Hz
 {
+
+	uint32_t TxMailbox;
+
 	if(send_can_2_message > 0)
 	{
 		send_can_2_message = 0;
-		CAN_TX(hcan1, VCU_INV3_header_L, INV_L_INV_Motor_fault);
-		CAN_TX(hcan1, VCU_INV3_header_R, INV_R_INV_Motor_fault);
+		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV3_header_L, INV_L_INV_Motor_fault, &TxMailbox);
+		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV3_header_R, INV_R_INV_Motor_fault, &TxMailbox);
+		//CAN_TX(hcan1, VCU_INV3_header_L, INV_L_INV_Motor_fault);
+		//CAN_TX(hcan1, VCU_INV3_header_R, INV_R_INV_Motor_fault);
 	}
 
 }
@@ -340,7 +345,16 @@ void CAN_100()
 		send_can_100_message = 0;
 		//CAN_TX(hcan1, VCU5_header_R, test2);
 
-		CAN_TX(hcan1, VCU_header, test2);
+		//CAN_TX(hcan1, VCU_header, test2);
+
+		uint32_t TxMailbox;
+		HAL_CAN_AddTxMessage(&hcan1, &VCU_header, test2, &TxMailbox);
+		/*
+		if (HAL_CAN_AddTxMessage(&hcan1, &VCU_header, test2, &TxMailbox) != HAL_OK)
+		{
+
+		}
+		*/
 		//CAN_TX_INV(hcan2, VCU_header, test2);
 
 		/*
@@ -351,15 +365,19 @@ void CAN_100()
 		  //Rekuperation
 			if(APPS_I < 50 && recu_active == 1 && brake_pressure_front > 10)
 			{
-				CAN_TX(hcan2, VCU2_header_R, Brake_Current_R);
-				CAN_TX(hcan2, VCU2_header_L, Brake_Current_L);
+				HAL_CAN_AddTxMessage(&hcan2, &VCU2_header_R, Brake_Current_R, &TxMailbox);
+				HAL_CAN_AddTxMessage(&hcan2, &VCU2_header_L, Brake_Current_L, &TxMailbox);
+				//CAN_TX(hcan2, VCU2_header_R, Brake_Current_R);
+				//CAN_TX(hcan2, VCU2_header_L, Brake_Current_L);
 			}
 			else
 			{
 				Brake_Current_broadcast[0] = 0;
 				Brake_Current_broadcast[1] = 0;
-				CAN_TX(hcan2, VCU1_header_L, AC_Current_L);
-				CAN_TX(hcan2, VCU1_header_R, AC_Current_R);
+				HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_L, AC_Current_L, &TxMailbox);
+				HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_R, AC_Current_R, &TxMailbox);
+				//CAN_TX(hcan2, VCU1_header_L, AC_Current_L);
+				//CAN_TX(hcan2, VCU1_header_R, AC_Current_R);
 			}
 		//CAN_TX(hcan2, VCU2_header_Broadcast, Brake_Current_broadcast);
 	}
@@ -389,9 +407,9 @@ void MX_CAN1_Init(void)
   hcan1.Init.TimeSeg1 = CAN_BS1_14TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_5TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
-  hcan1.Init.AutoBusOff = DISABLE;
-  hcan1.Init.AutoWakeUp = DISABLE;
-  hcan1.Init.AutoRetransmission = DISABLE;
+  hcan1.Init.AutoBusOff = ENABLE;
+  hcan1.Init.AutoWakeUp = ENABLE;
+  hcan1.Init.AutoRetransmission = ENABLE;
   hcan1.Init.ReceiveFifoLocked = DISABLE;
   hcan1.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
@@ -478,9 +496,9 @@ void MX_CAN2_Init(void)
   hcan2.Init.TimeSeg1 = CAN_BS1_14TQ;
   hcan2.Init.TimeSeg2 = CAN_BS2_5TQ;
   hcan2.Init.TimeTriggeredMode = DISABLE;
-  hcan2.Init.AutoBusOff = DISABLE;
-  hcan2.Init.AutoWakeUp = DISABLE;
-  hcan2.Init.AutoRetransmission = DISABLE;
+  hcan2.Init.AutoBusOff = ENABLE;
+  hcan2.Init.AutoWakeUp = ENABLE;
+  hcan2.Init.AutoRetransmission = ENABLE;
   hcan2.Init.ReceiveFifoLocked = DISABLE;
   hcan2.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan2) != HAL_OK)

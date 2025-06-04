@@ -1,4 +1,5 @@
-../Core/Src/motor_control.c:82:6:motor_control	8	static
-../Core/Src/motor_control.c:127:6:e_diff	16	static
-../Core/Src/motor_control.c:200:9:calculate_ac_current	16	static
-../Core/Src/motor_control.c:205:9:calculate_brake_current	16	static
+../Core/Src/motor_control.c:83:6:CAN_Recovery_Task	8	static
+../Core/Src/motor_control.c:106:6:motor_control	8	static
+../Core/Src/motor_control.c:155:6:e_diff	16	static
+../Core/Src/motor_control.c:218:9:calculate_ac_current	16	static
+../Core/Src/motor_control.c:223:9:calculate_brake_current	16	static

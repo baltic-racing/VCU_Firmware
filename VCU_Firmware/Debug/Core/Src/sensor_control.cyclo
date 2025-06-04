@@ -1,5 +1,5 @@
 ../Core/Src/sensor_control.c:34:6:APPS_getValues	5
 ../Core/Src/sensor_control.c:60:6:APPS_get	1
 ../Core/Src/sensor_control.c:66:6:APPS_calc	6
-../Core/Src/sensor_control.c:100:6:APPS_measure	1
-../Core/Src/sensor_control.c:113:6:APPS_init	1
+../Core/Src/sensor_control.c:99:6:APPS_measure	1
+../Core/Src/sensor_control.c:112:6:APPS_init	1

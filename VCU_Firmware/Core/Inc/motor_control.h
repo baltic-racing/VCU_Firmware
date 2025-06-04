@@ -14,6 +14,7 @@
 #include "adc.h"
 #include "sensor_control.h"
 
+void CAN_Recovery_Task(void);
 void motor_control(void);
 void e_diff(void);
 int16_t calculate_ac_current(uint16_t limit, uint16_t value);

@@ -80,10 +80,40 @@ uint32_t r2d_time_duration = 2000;
 uint8_t prev_r2d_bit = 0;
 uint8_t start_motor_control = 0;
 
+void CAN_Recovery_Task()
+{
+    static uint32_t last_check = 0;
+    if (HAL_GetTick() - last_check < 1000) return;
+    last_check = HAL_GetTick();
+
+    // CAN1 Recovery
+    if (hcan1.Instance->ESR & CAN_ESR_BOFF)
+    {
+        HAL_CAN_Stop(&hcan1);
+        HAL_CAN_Start(&hcan1);
+        HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+    }
+
+    // CAN2 Recovery
+    if (hcan2.Instance->ESR & CAN_ESR_BOFF)
+    {
+        HAL_CAN_Stop(&hcan2);
+        HAL_CAN_Start(&hcan2);
+        HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);
+    }
+}
+
 void motor_control()
 {
-	CAN_100();
-	CAN_2();
+	if(HAL_GetTick() > 2000)
+	{
+		if (!(hcan1.Instance->ESR & CAN_ESR_BOFF))
+		{
+		    CAN_100();
+		    CAN_2();
+		}
+	}
+
 
 	if(!APPS_check && HAL_GetTick() > 1000)
 	{

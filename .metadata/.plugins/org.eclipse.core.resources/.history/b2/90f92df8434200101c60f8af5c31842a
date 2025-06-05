@@ -127,7 +127,7 @@ void motor_control()
 
 	if(ts_ready)
 	{
-		if(!start_motor_control && r2d_bit && (brake_pressure_front > 50))	// Inspection sheet: Pressing brake pedal WHILE activation is necessary
+		if(!start_motor_control && r2d_bit)
 		{
 			start_motor_control = 1;
 			r2d_sound = 1;

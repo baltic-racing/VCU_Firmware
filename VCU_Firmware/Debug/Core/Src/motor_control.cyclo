@@ -1,5 +1,5 @@
 ../Core/Src/motor_control.c:83:6:CAN_Recovery_Task	4
-../Core/Src/motor_control.c:106:6:motor_control	11
+../Core/Src/motor_control.c:106:6:motor_control	12
 ../Core/Src/motor_control.c:155:6:e_diff	6
 ../Core/Src/motor_control.c:218:9:calculate_ac_current	1
 ../Core/Src/motor_control.c:223:9:calculate_brake_current	1

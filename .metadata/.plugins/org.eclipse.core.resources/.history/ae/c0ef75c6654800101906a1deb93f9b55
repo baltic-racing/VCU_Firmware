@@ -572,7 +572,7 @@ void MX_CAN2_Init(void)
   canfilterconfig_inv2.FilterScale = CAN_FILTERSCALE_32BIT;
   canfilterconfig_inv2.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
 
-  HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv2);
+  HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv);
 
   CAN_FilterTypeDef canfilterconfig_inv_3;
 
@@ -587,7 +587,7 @@ void MX_CAN2_Init(void)
   canfilterconfig_inv_3.FilterScale = CAN_FILTERSCALE_32BIT;
   canfilterconfig_inv_3.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
 
-  HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv_3);
+  HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv_1);
   /* USER CODE END CAN2_Init 2 */
 
 }

@@ -11,18 +11,16 @@
 uint16_t APPS_I_raw_adc = 0;
 //double APPS_I_adc_min = 700;
 uint16_t APPS_I_adc_min = 0;
-uint16_t APPS_I_adc_max = 1720;
+uint16_t APPS_I_adc_max = 2127;
 uint16_t APPS_II_raw_adc = 0;
 //double APPS_II_adc_min = 2850;
 uint16_t APPS_II_adc_min = 0;
-uint16_t APPS_II_adc_max = 2060;
+uint16_t APPS_II_adc_max = 1794;
 
 uint8_t APPS_check = 0;
 
 uint16_t APPS_I = 0;
 uint16_t APPS_II = 0;
-
-extern uint8_t start_motor_control;
 
 #define APPS_READ_TIMEOUT 100
 
@@ -63,23 +61,6 @@ void APPS_get()
 {
 	  APPS_getValues(&APPS_I_raw_adc, &APPS_II_raw_adc);
 	  APPS_calc();
-	  APPS_safty_car();
-}
-
-void APPS_safty_car()													// T11.8.7 - The APPS signals are SCS, see T11.9
-{
-	if(apps_I_raw < 30 || apps_II_raw < 30)
-	{
-		//error_state = 1;												// short too ground or open lead
-		start_motor_control = 0;
-		return;
-	}
-	if(apps_I_raw > 4000 || apps_II_raw > 4000)
-	{
-		//error_state = 2;												// short too supply
-		start_motor_control = 0;
-		return;
-	}
 }
 
 void APPS_calc()

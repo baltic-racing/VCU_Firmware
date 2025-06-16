@@ -55,7 +55,7 @@ float steering_brake_current_reduction_table[101] = {	0.999,0.999,0.999,0.999,0.
 														0.076};
 
 
-uint16_t current_limit = 3300;	//in mA
+uint16_t current_limit = 3000;	//in mA
 uint16_t brake_current_limit = 2000; // mA
 uint16_t ac_current_r = 0;
 uint16_t ac_current_l = 0;

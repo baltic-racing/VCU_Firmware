@@ -19,5 +19,6 @@ void APPS_get(void);
 void APPS_init(void);
 void APPS_calc(void);
 void APPS_measure(void);
+void APPS_safty_car(void);
 
 #endif /* INC_SENSOR_CONTROL_H_ */

@@ -13,7 +13,6 @@ extern uint8_t AC_Current_R[8];
 extern uint8_t Brake_Current_L[8];
 extern uint8_t Brake_Current_R[8];
 extern uint8_t Brake_Current_broadcast[8];
-extern uint8_t dc_current_limiter[8];
 
 //a = 0.069 und b = 69
 /*
@@ -81,12 +80,6 @@ uint8_t r2d_sound = 0;
 uint32_t r2d_time_duration = 2000;
 uint8_t prev_r2d_bit = 0;
 uint8_t start_motor_control = 0;
-
-extern uint16_t dc_voltage_inv;
-extern uint16_t dc_current_inv_l;
-extern uint16_t dc_current_inv_r;
-uint16_t dc_current = 0;
-uint16_t dc_current_limit = 0;
 
 void CAN_Recovery_Task()
 {
@@ -162,9 +155,6 @@ void motor_control()
 	}
 
 	e_diff();
-	dc_current_limiter_fcn();
-	dc_current_limiter[0] = dc_current_limit >> 8;
-	dc_current_limiter[1] = dc_current_limit;
 
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
 }
@@ -231,42 +221,6 @@ void e_diff()
 	Brake_Current_L[1] = brake_current_l;
 	Brake_Current_R[0] = brake_current_r >> 8;
 	Brake_Current_R[1] = brake_current_r;
-}
-
-void dc_current_limiter_fcn()
-{
-	float res_dc = 0.6572;
-	dc_current = dc_current_inv_l + dc_current_inv_r;
-	uint16_t act_ts_voltage = (res_dc * dc_current) + (dc_voltage_inv * 10);
-
-	if(act_ts_voltage > 5000) {
-		dc_current_limit = 1500/2;
-	}
-	else if(act_ts_voltage > 4800) {
-		dc_current_limit = 1300/2;
-	}
-	else if(act_ts_voltage > 4600) {
-		dc_current_limit = 1000/2;
-	}
-	else if(act_ts_voltage > 4400) {
-		dc_current_limit = 650/2;
-	}
-	else if(act_ts_voltage > 4200) {
-		dc_current_limit = 400/2;
-	}
-	else if(act_ts_voltage > 4000) {
-		dc_current_limit = 100/2;
-	}
-	else if (act_ts_voltage > 3800) {
-		dc_current_limit = 100/2;
-	}
-	else if	(act_ts_voltage > 3600) {
-		dc_current_limit = 100/2;
-	}
-	else
-	{
-		dc_current_limit = 0;
-	}
 }
 
 int16_t calculate_ac_current(uint16_t limit, uint16_t value)

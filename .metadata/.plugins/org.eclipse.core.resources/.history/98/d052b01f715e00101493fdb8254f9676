@@ -13,6 +13,7 @@ extern uint8_t AC_Current_R[8];
 extern uint8_t Brake_Current_L[8];
 extern uint8_t Brake_Current_R[8];
 extern uint8_t Brake_Current_broadcast[8];
+extern uint8_t dc_current_limiter[8];
 
 //a = 0.069 und b = 69
 /*
@@ -55,7 +56,7 @@ float steering_brake_current_reduction_table[101] = {	0.999,0.999,0.999,0.999,0.
 														0.076};
 
 
-uint16_t current_limit = 3000;	//in mA
+uint16_t current_limit = 3300;	//in mA
 uint16_t brake_current_limit = 2000; // mA
 uint16_t ac_current_r = 0;
 uint16_t ac_current_l = 0;
@@ -75,10 +76,17 @@ extern uint8_t recu_active;
 extern uint16_t brake_pressure_front;
 
 uint32_t r2d_time = 0;
+uint32_t ts_ready_time = 0;
 uint8_t r2d_sound = 0;
 uint32_t r2d_time_duration = 2000;
 uint8_t prev_r2d_bit = 0;
 uint8_t start_motor_control = 0;
+
+extern uint16_t dc_voltage_inv;
+extern uint16_t dc_current_inv_l;
+extern uint16_t dc_current_inv_r;
+uint16_t dc_current = 0;
+uint16_t dc_current_limit = 0;
 
 void CAN_Recovery_Task()
 {
@@ -141,13 +149,22 @@ void motor_control()
 			 HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_RESET);
 			 r2d_sound = 0;
 		}
+
+		ts_ready_time = HAL_GetTick();
 	}
 	else
 	{
-		start_motor_control = 0;
+
+		if(HAL_GetTick() - ts_ready_time >= 1000)
+		{
+			start_motor_control = 0;
+		}
 	}
 
 	e_diff();
+	dc_current_limiter_fcn();
+	dc_current_limiter[0] = dc_current_limit >> 8;
+	dc_current_limiter[0] = dc_current_limit;
 
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
 }
@@ -214,6 +231,53 @@ void e_diff()
 	Brake_Current_L[1] = brake_current_l;
 	Brake_Current_R[0] = brake_current_r >> 8;
 	Brake_Current_R[1] = brake_current_r;
+}
+
+void dc_current_limiter_fcn()
+{
+	float res_dc = 0.6572;
+	//ts_voltage 0,01
+	//dc_current 0,1;
+	dc_current = dc_current_inv_l + dc_current_inv_r;
+	uint16_t act_ts_voltage = (res_dc * dc_current) + (dc_voltage_inv * 10);
+
+	if(act_ts_voltage > 5000) {
+		dc_current_limit = 1500/2;
+		return;
+	}
+	else if(act_ts_voltage > 4800) {
+		dc_current_limit = 1300/2;
+		return;
+	}
+	else if(act_ts_voltage > 4600) {
+		dc_current_limit = 1000/2;
+		return;
+	}
+	else if(act_ts_voltage > 4400) {
+		dc_current_limit = 650/2;
+		return;
+	}
+	else if(act_ts_voltage > 4200) {
+		dc_current_limit = 400/2;
+		return;
+	}
+	else if(act_ts_voltage > 4000) {
+		dc_current_limit = 100/2;
+		return;
+	}
+	else if (act_ts_voltage > 3800) {
+		dc_current_limit = 100/2;
+		return;
+	}
+	else if	(act_ts_voltage > 3600) {
+		dc_current_limit = 100/2;
+		return;
+	}
+	else
+	{
+		dc_current_limit = 0;
+		return;
+	}
 }
 
 int16_t calculate_ac_current(uint16_t limit, uint16_t value)

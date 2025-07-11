@@ -32,9 +32,6 @@ uint8_t SA = 0;
 uint8_t recu_active = 0;
 
 uint16_t brake_pressure_front = 0;
-uint16_t dc_voltage_inv = 0;
-uint16_t dc_current_inv_l = 0;
-uint16_t dc_current_inv_r = 0;
 
 extern uint16_t brake_current;
 
@@ -48,9 +45,6 @@ uint8_t AC_Current_R[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t Brake_Current_L[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t Brake_Current_R[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t Brake_Current_broadcast[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-uint8_t dc_current_limiter[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
 uint8_t INV_L_INV_Motor_fault[8] = {0};
 uint8_t INV_R_INV_Motor_fault[8] = {0};
 uint8_t INV_L_AC_DC[8] = {0};
@@ -224,6 +218,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 	if(RxHeader.StdId == 0x200)
 	{
 		ts_ready = RxData[6] >> 3 & 0x01;
+		dc_current = ((uint16_t)RxData[2] << 8) | RxData[3];
 	}
 }
 
@@ -255,19 +250,12 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 		INV_R_INV_Motor_fault[4] = RxData[4];
 	}
 
-	if(RxHeader.StdId == ((0x20 << 5) | Node_ID_INV_L))
-	{
-		dc_voltage_inv = ((uint16_t)RxData[6] << 8) | RxData[7];
-	}
-
 	if(RxHeader.StdId == ((0x21 << 5) | Node_ID_INV_L))
 	{
 		INV_L_AC_DC[0] = RxData[0];
 		INV_L_AC_DC[1] = RxData[1];
 		INV_L_AC_DC[2] = RxData[2];
 		INV_L_AC_DC[3] = RxData[3];
-
-		dc_current_inv_l = ((uint16_t)RxData[2] << 8) | RxData[3];
 	}
 
 	if(RxHeader.StdId == ((0x21 << 5) | Node_ID_INV_R))
@@ -276,8 +264,6 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 		INV_R_AC_DC[1] = RxData[1];
 		INV_R_AC_DC[2] = RxData[2];
 		INV_R_AC_DC[3] = RxData[3];
-
-		dc_current_inv_r = ((uint16_t)RxData[2] << 8) | RxData[3];
 	}
 }
 
@@ -374,15 +360,10 @@ void CAN_100()
 	test2[1] = APPS_I >> 8;
 	test2[2] = APPS_II;
 	test2[3] = APPS_II >> 8;
-	test2[4] = dc_voltage_inv >> 8;
-	test2[5] = dc_voltage_inv;
+	test2[4] = brake_pressure_front >> 8;
+	test2[5] = brake_pressure_front;
 	test2[6] = lenkwinkel;
 	test2[7] = ts_ready;
-
-	uint8_t test3[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-	test3[0] = 0x02;
-	test3[1] = 0xEE;
 
 	if(send_can_100_message > 0)
 	{
@@ -395,10 +376,6 @@ void CAN_100()
 		HAL_CAN_AddTxMessage(&hcan1, &VCU_header, test2, &TxMailbox);
 		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV2_header_L, INV_L_AC_DC, &TxMailbox);
 		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV2_header_R, INV_R_AC_DC, &TxMailbox);
-
-
-		//HAL_CAN_AddTxMessage(&hcan2, &VCUA_header_L, test3, &TxMailbox);
-		HAL_CAN_AddTxMessage(&hcan2, &VCUA_header_Broadcast, dc_current_limiter, &TxMailbox);
 		/*
 		if (HAL_CAN_AddTxMessage(&hcan1, &VCU_header, test2, &TxMailbox) != HAL_OK)
 		{
@@ -615,21 +592,6 @@ void MX_CAN2_Init(void)
   canfilterconfig_inv_3.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
 
   HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv_3);
-
-  CAN_FilterTypeDef canfilterconfig_inv_4;
-
-  canfilterconfig_inv_4.FilterActivation = CAN_FILTER_ENABLE;
-  canfilterconfig_inv_4.FilterBank = 18;  // which filter bank to use from the assigned ones
-  canfilterconfig_inv_4.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-  canfilterconfig_inv_4.FilterIdHigh = ((0x20 << 5) | Node_ID_INV_L)<<5;
-  canfilterconfig_inv_4.FilterIdLow = 0;
-  canfilterconfig_inv_4.FilterMaskIdHigh = 0x7FF<<5;
-  canfilterconfig_inv_4.FilterMaskIdLow = 0x0000;
-  canfilterconfig_inv_4.FilterMode = CAN_FILTERMODE_IDMASK;
-  canfilterconfig_inv_4.FilterScale = CAN_FILTERSCALE_32BIT;
-  canfilterconfig_inv_4.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
-
-  HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv_4);
   /* USER CODE END CAN2_Init 2 */
 
 }

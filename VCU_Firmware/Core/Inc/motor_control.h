@@ -20,6 +20,8 @@ void e_diff(void);
 void dc_current_limiter_fcn(void);
 int16_t calculate_ac_current(uint16_t limit, uint16_t value);
 int16_t calculate_brake_current(uint16_t limit, uint16_t value);
+int32_t calculate_erpm(uint32_t limit, uint16_t value);
+float get_spurwinkel();
 //a = 0.069 und b = 69
 extern float steering_ac_current_reduction_table[101];
 

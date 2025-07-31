@@ -99,7 +99,7 @@ void APPS_calc()
 		APPS_I = (uint16_t)(((uint32_t)(APPS_I_raw_adc - APPS_I_adc_min) * 1000) / (APPS_I_adc_max - APPS_I_adc_min));
 		APPS_II = (uint16_t)(((uint32_t)(APPS_II_adc_min - APPS_II_raw_adc) * 1000) / (APPS_II_adc_min - APPS_II_adc_max));
 
-		if(APPS_I < 100)
+		if(APPS_I < 33)
 		{
 			APPS_I = 0;
 		}

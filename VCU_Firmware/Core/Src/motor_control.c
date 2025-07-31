@@ -14,6 +14,8 @@ extern uint8_t Brake_Current_L[8];
 extern uint8_t Brake_Current_R[8];
 extern uint8_t Brake_Current_broadcast[8];
 extern uint8_t dc_current_limiter[8];
+extern uint8_t ERPM_L[8];
+extern uint8_t ERPM_R[8];
 
 //a = 0.069 und b = 69
 /*
@@ -55,12 +57,62 @@ float steering_brake_current_reduction_table[101] = {	0.999,0.999,0.999,0.999,0.
 														0.182,0.168,0.154,0.142,0.130,0.119,0.109,0.100,0.091,0.083,
 														0.076};
 
+float outer_wheel_spurwinkel[21] = {
+		24.9226073243156,
+		23.8571954001906,
+		22.4365347428710,
+		21.3709620482986,
+		20.3053288705510,
+		18.8843997517547,
+		17.8186463737301,
+		16.3975772372235,
+		15.3317344225032,
+		13.9105672908319,
+		12.8446671910885,
+		11.4234456036423,
+		10.3575212553044,
+		8.93628959121853,
+		7.51507218239718,
+		6.44917719779255,
+		5.02801950031136,
+		3.60691549355664,
+		2.18587908795931,
+		0.764923851282816,
+		0.655937061714838,
+};
+
+float inner_wheel_spurwinkel[21] = {
+		0.655937061714838,
+		2.07669097841728,
+		3.49732577608597,
+		4.91782994800141,
+		6.33819266782302,
+		7.75840385198465,
+		9.53344067802445,
+		10.9532782919656,
+		12.7278235841253,
+		14.5020780774218,
+		16.2760322995854,
+		18.0496794634258,
+		19.8230155933411,
+		21.5960396394895,
+		23.7232595467786,
+		25.8500424182607,
+		27.9764042473190,
+		30.4566583298749,
+		32.9364186203411,
+		35.4157459891574,
+		38.6029366133443,
+};
 
 uint16_t current_limit = 3300;	//in mA
 uint16_t brake_current_limit = 2000; // mA
 uint16_t ac_current_r = 0;
 uint16_t ac_current_l = 0;
 uint16_t ac_current = 0;
+uint32_t erpm_r = 0;
+uint32_t erpm_l = 0;
+uint32_t wish_erpm = 0;
 uint16_t brake_current_r = 0;
 uint16_t brake_current_l = 0;
 uint16_t brake_current = 0;
@@ -88,6 +140,18 @@ extern uint16_t dc_current_inv_r;
 uint16_t dc_current = 0;
 uint16_t dc_current_limit = 0;
 
+uint8_t mode = 0x03;
+
+//Massen
+float m_fzg = 250;	// [kg] Gesamtfahrzeugmasse
+float J_fzg_z = 300;	// [kg*m^2] Massenträgheitsmoment um Z-Achse
+
+//Schwerpunkt und geometrische Abmaße
+float l_fzg = 1530.0f / 1000.0f;	//	[m] Radstand Fahrzeug
+float l_y_h = 1200.0f / 1000.0f; 		// 	[m] Spurweite hinten
+
+#define PI 3.14159265f
+
 void CAN_Recovery_Task()
 {
     static uint32_t last_check = 0;
@@ -113,15 +177,21 @@ void CAN_Recovery_Task()
 
 void motor_control()
 {
+
 	if(HAL_GetTick() > 2000)
 	{
+		/*
 		if (!(hcan1.Instance->ESR & CAN_ESR_BOFF))
 		{
 		    CAN_100();
 		    CAN_2();
 		}
-	}
+		*/
 
+		CAN_Recovery_Task();
+	    CAN_100();
+	    CAN_2();
+	}
 
 	if(!APPS_check && HAL_GetTick() > 1000)
 	{
@@ -132,6 +202,121 @@ void motor_control()
 	{
 		APPS_get();
 
+	}
+
+	if (start_motor_control) {
+
+		switch (mode) {
+				case 0x00:	// Acceleration
+
+					//slip control
+					dc_current_limit = 750;
+					e_diff();
+
+					break;
+				case 0x01:	// Skidpad
+
+					//yaw control
+					uint32_t erpm_limit = 40000;
+					wish_erpm = calculate_erpm(erpm_limit, APPS_I);
+
+					float radius = (float)(sin(PI/2-(get_spurwinkel()*PI / 180))/cos(PI/2-(get_spurwinkel()*PI / 180)))*l_fzg;
+
+					float speed_inner_wheel = wish_erpm * (radius - (l_y_h/2))/radius;
+					float speed_outer_wheel = wish_erpm * (radius + (l_y_h/2))/radius;
+
+					if (SA >> 7 == 1)
+					{
+						lenkwinkel = ~SA + 1;
+					}
+					else
+					{
+						lenkwinkel = SA;
+					}
+
+					if (lenkwinkel > 10)
+					{
+						if ((SA>>7) == 1) //negative Lenkwinkel > links
+						{
+							erpm_l = (uint32_t)speed_inner_wheel;
+							erpm_r = (uint32_t)speed_outer_wheel;
+						}
+						else if((SA>>7) == 0) //positive Lenkwinkel > rechts
+						{
+							erpm_l = (uint32_t)speed_outer_wheel;
+							erpm_r = (uint32_t)speed_inner_wheel;
+						}
+					}
+					else
+					{
+						erpm_l = wish_erpm;
+						erpm_r = wish_erpm;
+					}
+
+					ERPM_L[0] = erpm_l >> 24;
+					ERPM_L[1] = erpm_l >> 16;
+					ERPM_L[2] = erpm_l >> 8;
+					ERPM_L[3] = erpm_l;
+
+					ERPM_R[0] = erpm_r >> 24;
+					ERPM_R[1] = erpm_r >> 16;
+					ERPM_R[2] = erpm_r >> 8;
+					ERPM_R[3] = erpm_r;
+
+					break;
+				case 0x02:	//	Autocross
+					dc_current_limit = 750;
+					e_diff();
+
+					break;
+				case 0x03:	//	Endurance
+
+					e_diff();
+					dc_current_limiter_fcn();
+
+					break;
+				case 0x04:	// Fun1
+
+					//welded diff
+
+					dc_current_limiter_fcn();
+
+					ac_current = calculate_ac_current(current_limit, APPS_I);
+					ac_current_r = ac_current;
+					ac_current_l = ac_current;
+
+					AC_Current_L[0] = ac_current_l >> 8;
+					AC_Current_L[1] = ac_current_l;
+					AC_Current_R[0] = ac_current_r >> 8;
+					AC_Current_R[1] = ac_current_r;
+
+					break;
+				case 0x05:	// Fun2
+
+					break;
+				default: //survival mode
+
+					dc_current_limit = 750;
+
+					ac_current = calculate_ac_current(current_limit, APPS_I);
+					ac_current_r = ac_current;
+					ac_current_l = ac_current;
+
+					AC_Current_L[0] = ac_current_l >> 8;
+					AC_Current_L[1] = ac_current_l;
+					AC_Current_R[0] = ac_current_r >> 8;
+					AC_Current_R[1] = ac_current_r;
+					break;
+			}
+	}
+	else
+	{
+		ac_current_r = 0;
+		ac_current_l = 0;
+		brake_current_r = 0;
+		brake_current_l = 0;
+		erpm_l = 0;
+		erpm_r = 0;
 	}
 
 	if(ts_ready)
@@ -154,17 +339,11 @@ void motor_control()
 	}
 	else
 	{
-
 		if(HAL_GetTick() - ts_ready_time >= 1000)
 		{
 			start_motor_control = 0;
 		}
 	}
-
-	e_diff();
-	dc_current_limiter_fcn();
-	dc_current_limiter[0] = dc_current_limit >> 8;
-	dc_current_limiter[1] = dc_current_limit;
 
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
 }
@@ -267,6 +446,9 @@ void dc_current_limiter_fcn()
 	{
 		dc_current_limit = 0;
 	}
+
+	dc_current_limiter[0] = dc_current_limit >> 8;
+	dc_current_limiter[1] = dc_current_limit;
 }
 
 int16_t calculate_ac_current(uint16_t limit, uint16_t value)
@@ -277,4 +459,46 @@ int16_t calculate_ac_current(uint16_t limit, uint16_t value)
 int16_t calculate_brake_current(uint16_t limit, uint16_t value)
 {
 	return (int16_t)((float)limit * ((float)value/1000));
+}
+
+int32_t calculate_erpm(uint32_t limit, uint16_t value)
+{
+	return (int32_t)((float)limit * ((float)value/1000));
+}
+// Interpoliert Spurwinkel je nach Richtung
+float get_spurwinkel() {
+
+	//twos complement
+	if(SA >> 7 == 1)
+	{
+		lenkwinkel = ~SA + 1;
+	}
+	else
+	{
+		lenkwinkel = SA;
+	}
+
+	// Index in der Tabelle: 0..20 → entspricht 0%, 5%, ..., 100%
+	float pos = lenkwinkel / 5.0f;
+	int i = (int)pos;
+
+	//  Schutz gegen Zugriff außerhalb des Arrays
+	if (i >= 21 - 1) {
+		i = 21 - 2;
+		pos = 21 - 1;
+	}
+
+	float t = pos - i;
+
+	return inner_wheel_spurwinkel[i] * (1 - t) + inner_wheel_spurwinkel[i + 1] * t;
+
+	/*
+	if (percent < 0) {
+		// Linkskurve: innere Räder
+		return inner_wheel_spurwinkel[i] * (1 - t) + inner_wheel_spurwinkel[i + 1] * t;
+	} else {
+		// Rechtskurve: äußere Räder
+		return outer_wheel_spurwinkel[i] * (1 - t) + outer_wheel_spurwinkel[i + 1] * t;
+	}
+	*/
 }

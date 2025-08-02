@@ -1997,3 +1997,60 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\shoot\Documen
 
 !ENTRY org.eclipse.cdt.core 1 0 2025-07-30 17:25:10.462
 !MESSAGE Indexed 'VCU_Firmware' (32 sources, 123 headers) in 4.96 sec: 13,102 declarations; 78,026 references; 2 unresolved inclusions; 42 syntax errors; 147 unresolved names (0.16%)
+!SESSION 2025-07-31 20:22:42.817 -----------------------------------------------
+eclipse.buildId=Version 1.15.1
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-07-31 20:22:57.693
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-07-31 20:22:57.707
+!MESSAGE Log4j2 initialized with config file C:\Users\shoot\Documents\GitHub\VCU_Firmware\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-07-31 20:23:08.155
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-07-31 20:23:15.467
+!MESSAGE Indexed 'VCU_Firmware' (32 sources, 123 headers) in 6.5 sec: 13,102 declarations; 78,026 references; 2 unresolved inclusions; 42 syntax errors; 147 unresolved names (0.16%)
+!SESSION 2025-08-01 17:58:32.541 -----------------------------------------------
+eclipse.buildId=Version 1.15.1
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-01 17:59:11.294
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-01 17:59:11.309
+!MESSAGE Log4j2 initialized with config file C:\Users\shoot\Documents\GitHub\VCU_Firmware\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-01 17:59:21.762
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-01 17:59:29.441
+!MESSAGE Indexed 'VCU_Firmware' (32 sources, 123 headers) in 6.83 sec: 13,102 declarations; 78,043 references; 2 unresolved inclusions; 42 syntax errors; 147 unresolved names (0.16%)
+!SESSION 2025-08-02 12:20:15.816 -----------------------------------------------
+eclipse.buildId=Version 1.15.1
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_DE
+Framework arguments:  C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2025-08-02 12:20:29.086
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2025-08-02 12:20:29.088
+!MESSAGE Log4j2 initialized with config file C:\Users\shoot\Documents\GitHub\VCU_Firmware\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-08-02 12:20:37.205
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-08-02 12:20:45.535
+!MESSAGE Indexed 'VCU_Firmware' (32 sources, 123 headers) in 7.16 sec: 13,102 declarations; 78,043 references; 2 unresolved inclusions; 42 syntax errors; 147 unresolved names (0.16%)

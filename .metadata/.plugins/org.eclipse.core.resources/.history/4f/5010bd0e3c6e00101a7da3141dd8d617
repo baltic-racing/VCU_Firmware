@@ -180,6 +180,14 @@ void motor_control()
 
 	if(HAL_GetTick() > 2000)
 	{
+		/*
+		if (!(hcan1.Instance->ESR & CAN_ESR_BOFF))
+		{
+		    CAN_100();
+		    CAN_2();
+		}
+		*/
+
 		CAN_Recovery_Task();
 	    CAN_100();
 	    CAN_2();
@@ -203,8 +211,6 @@ void motor_control()
 
 					//slip control
 					dc_current_limit = 750;
-					dc_current_limiter[0] = dc_current_limit >> 8;
-					dc_current_limiter[1] = dc_current_limit;
 					e_diff();
 
 					break;
@@ -213,10 +219,6 @@ void motor_control()
 					//yaw control
 					uint32_t erpm_limit = 40000;
 					dc_current_limit = 750;
-
-					dc_current_limiter[0] = dc_current_limit >> 8;
-					dc_current_limiter[1] = dc_current_limit;
-
 					wish_erpm = calculate_erpm(erpm_limit, APPS_I);
 
 					float radius = (float)(sin(PI/2-(get_spurwinkel()*PI / 180))/cos(PI/2-(get_spurwinkel()*PI / 180)))*l_fzg;
@@ -265,8 +267,6 @@ void motor_control()
 					break;
 				case 0x02:	//	Autocross
 					dc_current_limit = 750;
-					dc_current_limiter[0] = dc_current_limit >> 8;
-					dc_current_limiter[1] = dc_current_limit;
 					e_diff();
 
 					break;
@@ -298,8 +298,6 @@ void motor_control()
 				default: //survival mode
 
 					dc_current_limit = 750;
-					dc_current_limiter[0] = dc_current_limit >> 8;
-					dc_current_limiter[1] = dc_current_limit;
 
 					ac_current = calculate_ac_current(current_limit, APPS_I);
 					ac_current_r = ac_current;

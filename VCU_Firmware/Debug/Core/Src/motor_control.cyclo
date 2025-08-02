@@ -1,8 +1,8 @@
 ../Core/Src/motor_control.c:155:6:CAN_Recovery_Task	4
 ../Core/Src/motor_control.c:178:6:motor_control	23
-../Core/Src/motor_control.c:352:6:e_diff	6
-../Core/Src/motor_control.c:415:6:dc_current_limiter_fcn	9
-../Core/Src/motor_control.c:454:9:calculate_ac_current	1
-../Core/Src/motor_control.c:459:9:calculate_brake_current	1
-../Core/Src/motor_control.c:464:9:calculate_erpm	1
-../Core/Src/motor_control.c:469:7:get_spurwinkel	3
+../Core/Src/motor_control.c:363:6:e_diff	6
+../Core/Src/motor_control.c:426:6:dc_current_limiter_fcn	9
+../Core/Src/motor_control.c:465:9:calculate_ac_current	1
+../Core/Src/motor_control.c:470:9:calculate_brake_current	1
+../Core/Src/motor_control.c:475:9:calculate_erpm	1
+../Core/Src/motor_control.c:480:7:get_spurwinkel	3

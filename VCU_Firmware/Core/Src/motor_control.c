@@ -128,6 +128,7 @@ extern uint8_t recu_active;
 extern uint16_t brake_pressure_front;
 
 uint32_t r2d_time = 0;
+uint32_t r2d_check = 0;
 uint32_t ts_ready_time = 0;
 uint8_t r2d_sound = 0;
 uint32_t r2d_time_duration = 2000;
@@ -326,10 +327,16 @@ void motor_control()
 	{
 		if(!start_motor_control && r2d_bit && (brake_pressure_front > 50))	// Inspection sheet: Pressing brake pedal WHILE activation is necessary
 		{
-			start_motor_control = 1;
-			r2d_sound = 1;
-			HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
-			r2d_time = HAL_GetTick();
+			if(HAL_GetTick() - r2d_check >= r2d_time_duration)
+			{
+				start_motor_control = 1;
+				r2d_sound = 1;
+				HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
+				r2d_time = HAL_GetTick();
+			}
+		}
+		else {
+			r2d_check = HAL_GetTick();
 		}
 
 		if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)

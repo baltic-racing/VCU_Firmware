@@ -370,7 +370,7 @@ void CAN_10()		// CAN Messages transmitted with 10 Hz
 
 extern uint16_t APPS_I;
 extern uint16_t APPS_II;
-extern uint8_t lenkwinkel;
+extern uint8_t start_motor_control;
 
 void CAN_100()
 {
@@ -378,9 +378,9 @@ void CAN_100()
 	test2[1] = APPS_I >> 8;
 	test2[2] = APPS_II;
 	test2[3] = APPS_II >> 8;
-	test2[4] = dc_voltage_inv >> 8;
-	test2[5] = dc_voltage_inv;
-	test2[6] = lenkwinkel;
+	test2[4] = 0;
+	test2[5] = start_motor_control;
+	test2[6] = SA;
 	test2[7] = ts_ready;
 
 	if(send_can_100_message > 0)

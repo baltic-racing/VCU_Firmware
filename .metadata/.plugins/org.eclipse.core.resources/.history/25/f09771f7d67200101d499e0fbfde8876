@@ -141,19 +141,16 @@ uint16_t dc_current = 0;
 uint16_t dc_current_limit = 0;
 
 uint8_t mode = 0x03;
-uint8_t rpm_mode = 0;
 
 //Massen
 float m_fzg = 250;	// [kg] Gesamtfahrzeugmasse
 float J_fzg_z = 300;	// [kg*m^2] Massenträgheitsmoment um Z-Achse
 
-//Drivetrain
-float trans_ratio = 4.3f;
 //Schwerpunkt und geometrische Abmaße
-float l_fzg = 1300/1000;	//	[m] Radstand Fahrzeug
-float l_v_fzg = 700/1000;	//	[m] Schwerpunktvorlage
-float l_h_fzg = 600/1000;	//	[m] Schwerpunktrücklage
-float l_y_h = 0.6f; 		// 	[m] Spurweite hinten
+float l_fzg = 1530.0f / 1000.0f;	//	[m] Radstand Fahrzeug
+float l_y_h = 1200.0f / 1000.0f; 		// 	[m] Spurweite hinten
+
+#define PI 3.14159265f
 
 void CAN_Recovery_Task()
 {
@@ -183,14 +180,6 @@ void motor_control()
 
 	if(HAL_GetTick() > 2000)
 	{
-		/*
-		if (!(hcan1.Instance->ESR & CAN_ESR_BOFF))
-		{
-		    CAN_100();
-		    CAN_2();
-		}
-		*/
-
 		CAN_Recovery_Task();
 	    CAN_100();
 	    CAN_2();
@@ -207,85 +196,146 @@ void motor_control()
 
 	}
 
-	switch (mode) {
-		case 0x00:	// Acceleration
+	if (start_motor_control) {
 
-			//slip control
-			dc_current_limit = 750;
-			e_diff();
+		switch (mode) {
+				case 0x00:	// Acceleration
 
-			break;
-		case 0x01:	// Skidpad
+					//slip control
+					dc_current_limit = 750;
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
+					e_diff();
 
-			//yaw control
-			rpm_mode = 1;
-			uint32_t erpm_limit = 40000;
-			wish_erpm = calculate_erpm_current(erpm_limit, APPS_I);
+					break;
+				case 0x01:	// Skidpad
 
-			float radius = sin(90-get_spurwinkel())*l_fzg;
+					//yaw control
+					uint32_t erpm_limit = 40000;
+					dc_current_limit = 750;
 
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
 
+					wish_erpm = calculate_erpm(erpm_limit, APPS_I);
 
-			float speed_inner_wheel = wish_erpm * (radius - (l_y_h/2))/radius;
-			float speed_outer_wheel = wish_erpm * (radius - (l_y_h/2))/radius;
+					float radius = (float)(sin(PI/2-(get_spurwinkel()*PI / 180))/cos(PI/2-(get_spurwinkel()*PI / 180)))*l_fzg;
 
+					float speed_inner_wheel = wish_erpm * (radius - (l_y_h/2))/radius;
+					float speed_outer_wheel = wish_erpm * (radius + (l_y_h/2))/radius;
 
+					if (SA >> 7 == 1)
+					{
+						lenkwinkel = ~SA + 1;
+					}
+					else
+					{
+						lenkwinkel = SA;
+					}
 
+					if (lenkwinkel > 10)
+					{
+						if ((SA>>7) == 1) //negative Lenkwinkel > links
+						{
+							erpm_l = (uint32_t)speed_inner_wheel;
+							erpm_r = (uint32_t)speed_outer_wheel;
+						}
+						else if((SA>>7) == 0) //positive Lenkwinkel > rechts
+						{
+							erpm_l = (uint32_t)speed_outer_wheel;
+							erpm_r = (uint32_t)speed_inner_wheel;
+						}
+					}
+					else
+					{
+						erpm_l = wish_erpm;
+						erpm_r = wish_erpm;
+					}
 
-			break;
-		case 0x02:	//	Autocross
-			dc_current_limit = 750;
-			e_diff();
+					ERPM_L[0] = erpm_l >> 24;
+					ERPM_L[1] = erpm_l >> 16;
+					ERPM_L[2] = erpm_l >> 8;
+					ERPM_L[3] = erpm_l;
 
-			break;
-		case 0x03:	//	Endurance
+					ERPM_R[0] = erpm_r >> 24;
+					ERPM_R[1] = erpm_r >> 16;
+					ERPM_R[2] = erpm_r >> 8;
+					ERPM_R[3] = erpm_r;
 
-			e_diff();
-			dc_current_limiter_fcn();
+					break;
+				case 0x02:	//	Autocross
+					dc_current_limit = 750;
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
+					e_diff();
 
-			break;
-		case 0x04:	// Fun1
+					break;
+				case 0x03:	//	Endurance
 
-			//welded diff
+					e_diff();
+					dc_current_limiter_fcn();
 
-			dc_current_limit = 750;
+					break;
+				case 0x04:	// Fun1
 
-			ac_current = calculate_ac_current(current_limit, APPS_I);
-			ac_current_r = ac_current;
-			ac_current_l = ac_current;
+					//welded diff
 
-			AC_Current_L[0] = ac_current_l >> 8;
-			AC_Current_L[1] = ac_current_l;
-			AC_Current_R[0] = ac_current_r >> 8;
-			AC_Current_R[1] = ac_current_r;
+					dc_current_limiter_fcn();
 
-			break;
-		case 0x05:	// Fun2
+					ac_current = calculate_ac_current(current_limit, APPS_I);
+					ac_current_r = ac_current;
+					ac_current_l = ac_current;
 
-			break;
-		default: //survival mode
+					AC_Current_L[0] = ac_current_l >> 8;
+					AC_Current_L[1] = ac_current_l;
+					AC_Current_R[0] = ac_current_r >> 8;
+					AC_Current_R[1] = ac_current_r;
 
-			dc_current_limit = 750;
+					break;
+				case 0x05:	// Fun2
 
-			ac_current = calculate_ac_current(current_limit, APPS_I);
-			ac_current_r = ac_current;
-			ac_current_l = ac_current;
+					break;
+				default: //survival mode
 
-			AC_Current_L[0] = ac_current_l >> 8;
-			AC_Current_L[1] = ac_current_l;
-			AC_Current_R[0] = ac_current_r >> 8;
-			AC_Current_R[1] = ac_current_r;
-			break;
+					dc_current_limit = 750;
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
+
+					ac_current = calculate_ac_current(current_limit, APPS_I);
+					ac_current_r = ac_current;
+					ac_current_l = ac_current;
+
+					AC_Current_L[0] = ac_current_l >> 8;
+					AC_Current_L[1] = ac_current_l;
+					AC_Current_R[0] = ac_current_r >> 8;
+					AC_Current_R[1] = ac_current_r;
+					break;
+			}
+	}
+	else
+	{
+		ac_current_r = 0;
+		ac_current_l = 0;
+		brake_current_r = 0;
+		brake_current_l = 0;
+		erpm_l = 0;
+		erpm_r = 0;
 	}
 
 	if(ts_ready)
 	{
 		if(!start_motor_control && r2d_bit && (brake_pressure_front > 50))	// Inspection sheet: Pressing brake pedal WHILE activation is necessary
 		{
-			start_motor_control = 1;
-			r2d_sound = 1;
-			HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
-			r2d_time = HAL_GetTick();
+			if(HAL_GetTick() - r2d_check >= r2d_time_duration)
+			{
+				start_motor_control = 1;
+				r2d_sound = 1;
+				HAL_GPIO_WritePin(r2d_GPIO_Port, r2d_Pin, GPIO_PIN_SET);
+				r2d_time = HAL_GetTick();
+			}
+		}
+		else {
+			r2d_check = HAL_GetTick();
 		}
 
 		if(r2d_sound && HAL_GetTick() - r2d_time >= r2d_time_duration)
@@ -420,9 +470,9 @@ int16_t calculate_brake_current(uint16_t limit, uint16_t value)
 	return (int16_t)((float)limit * ((float)value/1000));
 }
 
-int16_t calculate_erpm(uint16_t limit, uint16_t value)
+int32_t calculate_erpm(uint32_t limit, uint16_t value)
 {
-	return (int16_t)((float)limit * ((float)value/1000));
+	return (int32_t)((float)limit * ((float)value/1000));
 }
 // Interpoliert Spurwinkel je nach Richtung
 float get_spurwinkel() {

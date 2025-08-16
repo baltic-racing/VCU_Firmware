@@ -132,7 +132,7 @@ uint32_t ts_ready_time = 0;
 uint8_t r2d_sound = 0;
 uint32_t r2d_time_duration = 2000;
 uint8_t prev_r2d_bit = 0;
-uint8_t start_motor_control = 1;
+uint8_t start_motor_control = 0;
 
 extern uint16_t dc_voltage_inv;
 extern uint16_t dc_current_inv_l;
@@ -180,14 +180,6 @@ void motor_control()
 
 	if(HAL_GetTick() > 2000)
 	{
-		/*
-		if (!(hcan1.Instance->ESR & CAN_ESR_BOFF))
-		{
-		    CAN_100();
-		    CAN_2();
-		}
-		*/
-
 		CAN_Recovery_Task();
 	    CAN_100();
 	    CAN_2();
@@ -211,6 +203,8 @@ void motor_control()
 
 					//slip control
 					dc_current_limit = 750;
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
 					e_diff();
 
 					break;
@@ -218,9 +212,14 @@ void motor_control()
 
 					//yaw control
 					uint32_t erpm_limit = 40000;
+					dc_current_limit = 750;
+
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
+
 					wish_erpm = calculate_erpm(erpm_limit, APPS_I);
 
-					float radius = (float)(sin(PI-(get_spurwinkel()*PI / 180))/cos(PI-(get_spurwinkel()*PI / 180)) + PI)*l_fzg;
+					float radius = (float)(sin(PI/2-(get_spurwinkel()*PI / 180))/cos(PI/2-(get_spurwinkel()*PI / 180)))*l_fzg;
 
 					float speed_inner_wheel = wish_erpm * (radius - (l_y_h/2))/radius;
 					float speed_outer_wheel = wish_erpm * (radius + (l_y_h/2))/radius;
@@ -263,10 +262,11 @@ void motor_control()
 					ERPM_R[2] = erpm_r >> 8;
 					ERPM_R[3] = erpm_r;
 
-
 					break;
 				case 0x02:	//	Autocross
 					dc_current_limit = 750;
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
 					e_diff();
 
 					break;
@@ -298,6 +298,8 @@ void motor_control()
 				default: //survival mode
 
 					dc_current_limit = 750;
+					dc_current_limiter[0] = dc_current_limit >> 8;
+					dc_current_limiter[1] = dc_current_limit;
 
 					ac_current = calculate_ac_current(current_limit, APPS_I);
 					ac_current_r = ac_current;
@@ -342,7 +344,7 @@ void motor_control()
 	{
 		if(HAL_GetTick() - ts_ready_time >= 1000)
 		{
-			//start_motor_control = 0;
+			start_motor_control = 0;
 		}
 	}
 

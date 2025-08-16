@@ -27,7 +27,7 @@ uint8_t test2[8];
 
 uint8_t r2d_bit = 0;
 uint8_t ts_on = 0;
-uint8_t ts_ready = 0;
+uint8_t ts_ready = 1;
 uint8_t SA = 0;
 uint8_t recu_active = 0;
 
@@ -38,7 +38,6 @@ uint16_t dc_current_inv_r = 0;
 
 extern uint16_t brake_current;
 extern uint8_t mode;
-extern uint8_t rpm_mode;
 
 uint16_t motor_temp_r = 0;
 uint16_t inv_temp_r = 0;
@@ -228,7 +227,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 	if(RxHeader.StdId == 0x200)
 	{
-		ts_ready = RxData[6] >> 3 & 0x01;
+		//ts_ready = RxData[6] >> 3 & 0x01;
 	}
 }
 
@@ -371,7 +370,7 @@ void CAN_10()		// CAN Messages transmitted with 10 Hz
 
 extern uint16_t APPS_I;
 extern uint16_t APPS_II;
-extern uint8_t lenkwinkel;
+extern uint8_t start_motor_control;
 
 void CAN_100()
 {
@@ -379,9 +378,9 @@ void CAN_100()
 	test2[1] = APPS_I >> 8;
 	test2[2] = APPS_II;
 	test2[3] = APPS_II >> 8;
-	test2[4] = dc_voltage_inv >> 8;
-	test2[5] = dc_voltage_inv;
-	test2[6] = lenkwinkel;
+	test2[4] = 0;
+	test2[5] = start_motor_control;
+	test2[6] = SA;
 	test2[7] = ts_ready;
 
 	if(send_can_100_message > 0)
@@ -395,12 +394,10 @@ void CAN_100()
 
 		HAL_CAN_AddTxMessage(&hcan2, &VCUA_header_Broadcast, dc_current_limiter, &TxMailbox);
 
-		if(rpm_mode)
+		if(mode == 0x01)
 		{
 			HAL_CAN_AddTxMessage(&hcan2, &VCU3_header_R, ERPM_R, &TxMailbox);
 			HAL_CAN_AddTxMessage(&hcan2, &VCU3_header_L, ERPM_L, &TxMailbox);
-
-
 		}
 		else
 		{

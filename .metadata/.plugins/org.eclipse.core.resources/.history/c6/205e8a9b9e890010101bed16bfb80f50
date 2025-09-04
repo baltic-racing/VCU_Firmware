@@ -197,7 +197,6 @@ void motor_control()
 
 	}
 
-	/*
 	if (start_motor_control) {
 
 		switch (mode) {
@@ -323,12 +322,6 @@ void motor_control()
 		erpm_l = 0;
 		erpm_r = 0;
 	}
-	*/
-
-
-	dc_current_limit = 750;
-	dc_current_limiter[0] = dc_current_limit >> 8;
-	dc_current_limiter[1] = dc_current_limit;
 
 	if(ts_ready)
 	{

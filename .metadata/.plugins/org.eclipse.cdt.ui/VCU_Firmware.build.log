@@ -1,10 +1,17 @@
-17:11:34 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+17:55:54 **** Incremental Build of configuration Debug for project VCU_Firmware ****
 make -j12 all 
+arm-none-eabi-gcc "../Core/Src/can.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/can.d" -MT"Core/Src/can.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/can.o"
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\shoot\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
 arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
    text	   data	    bss	    dec	    hex	filename
-  27712	   1280	   2296	  31288	   7a38	VCU_Firmware.elf
+  21764	    192	   2264	  24220	   5e9c	VCU_Firmware.elf
 Finished building: default.size.stdout
  
+Finished building: VCU_Firmware.list
+ 
 
-17:11:35 Build Finished. 0 errors, 0 warnings. (took 471ms)
+17:55:57 Build Finished. 0 errors, 0 warnings. (took 3s.4ms)
 

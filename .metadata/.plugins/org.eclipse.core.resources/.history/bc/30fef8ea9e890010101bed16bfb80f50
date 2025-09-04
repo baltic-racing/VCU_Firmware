@@ -258,7 +258,7 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 		INV_L_INV_Motor_fault[4] = RxData[4];
 	}
 
-	if(RxHeader.StdId == ((0x22 << 5) | Node_ID_INV_L))
+	if(RxHeader.StdId == ((0x22 << 5) | Node_ID_INV_R))
 	{
 		INV_R_INV_Motor_fault[0] = RxData[0];
 		INV_R_INV_Motor_fault[1] = RxData[1];
@@ -405,15 +405,6 @@ void CAN_100()
 			HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_L, AC_Current_L, &TxMailbox);
 			HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_R, AC_Current_R, &TxMailbox);
 		}
-		else
-		{
-			/*
-			AC_Current_L[0] = 0;
-			AC_Current_L[1] = 0;
-			AC_Current_R[0] = 0;
-			AC_Current_R[1] = 0;
-			*/
-		}
 
 		/*
 
@@ -526,7 +517,7 @@ void MX_CAN1_Init(void)
     canfilterconfig3.FilterActivation = CAN_FILTER_ENABLE;
     canfilterconfig3.FilterBank = 3;  // which filter bank to use from the assigned ones
     canfilterconfig3.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-    canfilterconfig3.FilterIdHigh = ((0x01 << 5) | Node_ID_INV_L) << 5;
+    canfilterconfig3.FilterIdHigh = ((0x01 << 5) | Node_ID_INV_L);
     canfilterconfig3.FilterIdLow = 0;
     canfilterconfig3.FilterMaskIdHigh = 0x7FF<<5;
     canfilterconfig3.FilterMaskIdLow = 0x0000;
@@ -540,7 +531,7 @@ void MX_CAN1_Init(void)
     canfilterconfig4.FilterActivation = CAN_FILTER_ENABLE;
     canfilterconfig4.FilterBank = 4;  // which filter bank to use from the assigned ones
     canfilterconfig4.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-    canfilterconfig4.FilterIdHigh = ((0x01 << 5) | Node_ID_INV_R) << 5;
+    canfilterconfig4.FilterIdHigh = ((0x01 << 5) | Node_ID_INV_R);
     canfilterconfig4.FilterIdLow = 0;
     canfilterconfig4.FilterMaskIdHigh = 0x7FF<<5;
     canfilterconfig4.FilterMaskIdLow = 0x0000;

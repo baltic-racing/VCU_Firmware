@@ -23,7 +23,7 @@
 #include "dma.h"
 #include "tim.h"
 #include "gpio.h"
-
+#include "radio_tx.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "motor_control.h"
@@ -134,6 +134,7 @@ int main(void)
   while (1)
   {
 	 motor_control();
+	 radio_tx();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

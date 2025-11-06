@@ -1,0 +1,4 @@
+../Drivers/WCON_SDK/WCON_Drivers/utils/base64.c:57:6:Base64_GetDecBufSize	24	static
+../Drivers/WCON_SDK/WCON_Drivers/utils/base64.c:94:6:Base64_GetEncBufSize	16	static
+../Drivers/WCON_SDK/WCON_Drivers/utils/base64.c:122:6:Base64_Decode	56	static
+../Drivers/WCON_SDK/WCON_Drivers/utils/base64.c:196:6:Base64_Encode	56	static

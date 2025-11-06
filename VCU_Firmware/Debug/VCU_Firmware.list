@@ -1376,17 +1376,17 @@ void MX_TIM2_Init(void)
  8000a46:	4b1e      	ldr	r3, [pc, #120]	@ (8000ac0 <MX_TIM2_Init+0x98>)
  8000a48:	f04f 4280 	mov.w	r2, #1073741824	@ 0x40000000
  8000a4c:	601a      	str	r2, [r3, #0]
-  htim2.Init.Prescaler = 9999;
+  htim2.Init.Prescaler = 100-1;
  8000a4e:	4b1c      	ldr	r3, [pc, #112]	@ (8000ac0 <MX_TIM2_Init+0x98>)
- 8000a50:	f242 720f 	movw	r2, #9999	@ 0x270f
- 8000a54:	605a      	str	r2, [r3, #4]
+ 8000a50:	2263      	movs	r2, #99	@ 0x63
+ 8000a52:	605a      	str	r2, [r3, #4]
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
- 8000a56:	4b1a      	ldr	r3, [pc, #104]	@ (8000ac0 <MX_TIM2_Init+0x98>)
- 8000a58:	2200      	movs	r2, #0
- 8000a5a:	609a      	str	r2, [r3, #8]
-  htim2.Init.Period = 9;
- 8000a5c:	4b18      	ldr	r3, [pc, #96]	@ (8000ac0 <MX_TIM2_Init+0x98>)
- 8000a5e:	2209      	movs	r2, #9
+ 8000a54:	4b1a      	ldr	r3, [pc, #104]	@ (8000ac0 <MX_TIM2_Init+0x98>)
+ 8000a56:	2200      	movs	r2, #0
+ 8000a58:	609a      	str	r2, [r3, #8]
+  htim2.Init.Period = 1000;
+ 8000a5a:	4b19      	ldr	r3, [pc, #100]	@ (8000ac0 <MX_TIM2_Init+0x98>)
+ 8000a5c:	f44f 727a 	mov.w	r2, #1000	@ 0x3e8
  8000a60:	60da      	str	r2, [r3, #12]
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
  8000a62:	4b17      	ldr	r3, [pc, #92]	@ (8000ac0 <MX_TIM2_Init+0x98>)
@@ -1650,9 +1650,9 @@ void MX_USART1_UART_Init(void)
  8000bd4:	4b14      	ldr	r3, [pc, #80]	@ (8000c28 <MX_USART1_UART_Init+0x58>)
  8000bd6:	4a15      	ldr	r2, [pc, #84]	@ (8000c2c <MX_USART1_UART_Init+0x5c>)
  8000bd8:	601a      	str	r2, [r3, #0]
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
  8000bda:	4b13      	ldr	r3, [pc, #76]	@ (8000c28 <MX_USART1_UART_Init+0x58>)
- 8000bdc:	f44f 32e1 	mov.w	r2, #115200	@ 0x1c200
+ 8000bdc:	f44f 5216 	mov.w	r2, #9600	@ 0x2580
  8000be0:	605a      	str	r2, [r3, #4]
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
  8000be2:	4b11      	ldr	r3, [pc, #68]	@ (8000c28 <MX_USART1_UART_Init+0x58>)

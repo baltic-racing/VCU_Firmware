@@ -19,7 +19,9 @@ uint8_t Tx_UART_Data[8];
 /* Functions*/
 void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t *Tx_UART_Data, uint8_t *timeout){
 	//if(*uart_exe_flag == 0){
-		HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin, GPIO_PIN_SET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
+	  	TarvosIII_Init();
+
+		HAL_GPIO_WritePin(GPIOA, Tarvos_WAKE_UP_Pin, GPIO_PIN_SET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
 
 		//(*uart_exe_flag)++;
 	//}

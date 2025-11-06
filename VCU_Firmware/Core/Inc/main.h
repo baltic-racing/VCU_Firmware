@@ -57,6 +57,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Tarvos_WAKE_UP_Pin GPIO_PIN_11
+#define Tarvos_WAKE_UP_GPIO_Port GPIOE
 #define lv_active_Pin GPIO_PIN_15
 #define lv_active_GPIO_Port GPIOE
 #define LED_Blue_Pin GPIO_PIN_14

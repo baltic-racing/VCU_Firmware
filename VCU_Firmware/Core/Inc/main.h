@@ -65,6 +65,10 @@ void Error_Handler(void);
 #define LED_RED_GPIO_Port GPIOD
 #define r2d_Pin GPIO_PIN_9
 #define r2d_GPIO_Port GPIOA
+#define Tarvos_Mode_Pin GPIO_PIN_11
+#define Tarvos_Mode_GPIO_Port GPIOA
+#define Tarvos_RTS_Pin GPIO_PIN_12
+#define Tarvos_RTS_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

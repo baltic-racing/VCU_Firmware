@@ -1,0 +1,27 @@
+/*
+ * System_control.c
+ *
+ *  Created on: Nov 5, 2025
+ *      Author: Egquus
+ */
+
+/* Includes ------------------------------------------------------------------*/
+#include "System_control.h"
+/* USER CODE BEGIN 0 */
+/*Includes*/
+#include "main.h"
+
+/* Variables */
+
+extern uint8_t UART1_exe;
+extern uint8_t Tx_UART_Data[8];
+
+/*Functions*/
+
+void System_control(){
+	radio_TX(&huart, UART1_exe, Tx_UART_Data);
+}
+
+/* USER CODE END 0 */
+
+/*----------------------------------------------------------------------------*/

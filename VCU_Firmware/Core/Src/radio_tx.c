@@ -4,19 +4,32 @@
  *  Created on: Oct 13, 2025
  *      Author: Egquus
  */
-
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
 #include "radio_tx.h"
 #include "stdlib.h"
 #include "stdbool.h"
 #include "usart.h"
 #include "gpio.h"
 
-void radio_init(){
-	HAL_GPIO_WritePin(Tarvos_Mode_GPIO_PORT, Tarvos_Mode_Pin, GPIO_PIN_RESET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
-}
+/* Variables*/
+uint8_t UART1_exe = 0;
+uint8_t Tx_UART_Data[8];
 
-void radio_TX(void){
-	HAL_GPIO_WritePin(Tarvos_RTS_GPIO_PORT, Tarvos_RTS_Pin, GPIO_PIN_SET);
+/* Functions*/
+void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t *Tx_UART_Data, uint8_t *timeout){
+	//if(*uart_exe_flag == 0){
+		HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin, GPIO_PIN_SET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
 
-	HAL_USART_Transmit()
+		//(*uart_exe_flag)++;
+	//}
+	/*________________________________________________________________________________________________________*/
+
+	if(huart->gState == HAL_UART_STATE_READY){
+		HAL_UART_Transmit(huart, Tx_UART_Data, 8, timeout);
+
+	}else{
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
+
+	}
 }

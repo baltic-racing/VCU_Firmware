@@ -1,0 +1,36 @@
+/*
+ * radio_tx.c
+ *
+ *  Created on: Oct 13, 2025
+ *      Author: Egquus
+ */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "radio_tx.h"
+#include "stdlib.h"
+#include "stdbool.h"
+#include "usart.h"
+#include "gpio.h"
+
+/* Variables*/
+uint8_t UART1_exe = 0;
+
+/* Functions*/
+void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t *Tx_UART_Data, uint8_t *timeout){
+	if(*uart_exe_flag == 0){
+		HAL_GPIO_WritePin(GPIOA, Tarvos_RTS_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin, GPIO_PIN_RESET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
+
+		(*uart_exe_flag)++;
+	}
+	/*________________________________________________________________________________________________________*/
+
+	if(huart->gState == HAL_UART_STATE_READY){
+		__HAL_LOCK(huart);
+		HAL_USART_Transmit(huart, Tx_UART_Data, sizeof(Tx_UART_Data), timeout);
+
+	}else{
+
+
+	}
+}

@@ -1,25 +1,77 @@
-17:17:24 **** Incremental Build of configuration Debug for project VCU_Firmware ****
-make -j4 all 
-arm-none-eabi-gcc "../Drivers/WCON_SDK/global/debug.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/WCON_SDK/global/debug.d" -MT"Drivers/WCON_SDK/global/debug.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Drivers/WCON_SDK/global/debug.o"
-arm-none-eabi-gcc "../Drivers/WCON_SDK/global/global.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/WCON_SDK/global/global.d" -MT"Drivers/WCON_SDK/global/global.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Drivers/WCON_SDK/global/global.o"
-arm-none-eabi-gcc "../Drivers/WCON_SDK/WCON_Drivers/utils/base64.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/WCON_SDK/WCON_Drivers/utils/base64.d" -MT"Drivers/WCON_SDK/WCON_Drivers/utils/base64.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Drivers/WCON_SDK/WCON_Drivers/utils/base64.o"
-arm-none-eabi-gcc "../Drivers/WCON_SDK/WCON_Drivers/utils/json-builder.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/WCON_SDK/WCON_Drivers/utils/json-builder.d" -MT"Drivers/WCON_SDK/WCON_Drivers/utils/json-builder.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Drivers/WCON_SDK/WCON_Drivers/utils/json-builder.o"
-../Drivers/WCON_SDK/global/debug.c:31:10: fatal error: global/debug.h: No such file or directory
-   31 | #include <global/debug.h>
-      |          ^~~~~~~~~~~~~~~~
-compilation terminated.
-In file included from ../Drivers/WCON_SDK/global/global.c:31:
-../Drivers/WCON_SDK/global/global_platform_types.h:45:5: error: unknown type name 'GPIO_TypeDef'
-   45 |     GPIO_TypeDef* port;
-      |     ^~~~~~~~~~~~
-../Drivers/WCON_SDK/global/global_platform_types.h:46:5: error: unknown type name 'uint32_t'
-   46 |     uint32_t pin;
-      |     ^~~~~~~~
-../Drivers/WCON_SDK/global/global.c:32:10: fatal error: global/global.h: No such file or directory
-   32 | #include <global/global.h>
-      |          ^~~~~~~~~~~~~~~~~
-compilation terminated.
-make: *** [Drivers/WCON_SDK/global/subdir.mk:22: Drivers/WCON_SDK/global/debug.o] Error 1
-make: *** Waiting for unfinished jobs....
-make: *** [Drivers/WCON_SDK/global/subdir.mk:22: Drivers/WCON_SDK/global/global.o] Error 1
-"make -j4 all" terminated with exit code 2. Build might be incomplete.
+15:27:49 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/radio_tx.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/racin/Documents/GitHub/WirelessConnectivity-SDK_STM32/WCON_SDK" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/radio_tx.d" -MT"Core/Src/radio_tx.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/radio_tx.o"
+../Core/Src/radio_tx.c: In function 'TarvosIII_Init':
+../Core/Src/radio_tx.c:190:9: warning: 'memcpy' reading 6 bytes from a region of size 1 [-Wstringop-overread]
+  190 |         memcpy(&CMD_Array[3], &payload[5], length);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/radio_tx.c:27:9: note: at offset 5 into source object 'payload' of size 6
+   27 | uint8_t payload[6];
+      |         ^~~~~~~
+../Core/Src/radio_tx.c: In function 'radio_TX':
+../Core/Src/radio_tx.c:219:9: warning: 'memcpy' reading 8 bytes from a region of size 6 [-Wstringop-overread]
+  219 |         memcpy(&CMD_Array[3], payload, length);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/radio_tx.c:27:9: note: source object 'payload' of size 6
+   27 | uint8_t payload[6];
+      |         ^~~~~~~
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\Marek\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  18016	     12	   1876	  19904	   4dc0	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+15:27:52 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  18016	     12	   1876	  19904	   4dc0	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:41:24 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/radio_tx.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/racin/Documents/GitHub/WirelessConnectivity-SDK_STM32/WCON_SDK" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/radio_tx.d" -MT"Core/Src/radio_tx.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/radio_tx.o"
+../Core/Src/radio_tx.c: In function 'radio_TX':
+../Core/Src/radio_tx.c:219:9: warning: 'memcpy' reading 8 bytes from a region of size 6 [-Wstringop-overread]
+  219 |         memcpy(&CMD_Array[3], payload, length);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/radio_tx.c:27:9: note: source object 'payload' of size 6
+   27 | uint8_t payload[6];
+      |         ^~~~~~~
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\Marek\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  18012	     12	   1876	  19900	   4dbc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 
+15:46:28 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/Src/radio_tx.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I"C:/Users/racin/Documents/GitHub/WirelessConnectivity-SDK_STM32/WCON_SDK" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/radio_tx.d" -MT"Core/Src/radio_tx.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/radio_tx.o"
+../Core/Src/radio_tx.c: In function 'radio_TX':
+../Core/Src/radio_tx.c:219:9: warning: 'memcpy' reading 8 bytes from a region of size 6 [-Wstringop-overread]
+  219 |         memcpy(&CMD_Array[3], payload, length);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../Core/Src/radio_tx.c:27:9: note: source object 'payload' of size 6
+   27 | uint8_t payload[6];
+      |         ^~~~~~~
+arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\Marek\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: VCU_Firmware.elf
+ 
+arm-none-eabi-size  VCU_Firmware.elf 
+arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
+   text	   data	    bss	    dec	    hex	filename
+  18012	     12	   1876	  19900	   4dbc	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+Finished building: VCU_Firmware.list
+ 

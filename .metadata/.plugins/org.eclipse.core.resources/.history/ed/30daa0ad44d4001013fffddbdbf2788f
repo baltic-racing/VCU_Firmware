@@ -1,0 +1,285 @@
+/*
+ * radio_tx.c
+ *
+ *  Created on: Oct 13, 2025
+ *      Author: Egquus
+ */
+/* Includes ------------------------------------------------------------------*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#include <errno.h>
+#include "string.h"
+
+
+#include "main.h"
+#include "radio_tx.h"
+#include "stdbool.h"
+#include "usart.h"
+#include "gpio.h"
+
+/* Variables*/
+uint8_t UART1_exe = 0;
+uint8_t Tx_UART_Data[8];
+uint8_t timeout = 100;
+uint8_t rxBuff[8];
+uint8_t payload[6];
+
+//uint8_t CMD_Array[4];
+#define CMD_STX 0x02
+#define TarvosIII_CMD_DATA 0x00
+
+
+#define CMD_WAIT_TIME 500
+#define CNFINVALID 255
+#define MAX_PAYLOAD_LENGTH 224
+#define MAX_DATA_BUFFER 255
+#define TXPOWERINVALID -128
+#define RSSIINVALID -128
+#define CHANNELINVALID -1
+
+#define CMD_STX 0x02
+#define TarvosIII_CMD_TYPE_REQ (0 << 6)
+#define TarvosIII_CMD_TYPE_CNF (1 << 6)
+#define TarvosIII_CMD_TYPE_IND (2 << 6)
+#define TarvosIII_CMD_TYPE_RSP (3 << 6)
+
+#define TarvosIII_CMD_DATA 0x00
+#define TarvosIII_CMD_DATA_REQ (TarvosIII_CMD_DATA | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_DATA_CNF (TarvosIII_CMD_DATA | TarvosIII_CMD_TYPE_CNF)
+#define TarvosIII_CMD_REPEAT_IND (TarvosIII_CMD_DATA | TarvosIII_CMD_TYPE_IND)
+
+#define TarvosIII_CMD_DATAEX 0x01
+#define TarvosIII_CMD_DATAEX_REQ (TarvosIII_CMD_DATAEX | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_DATAEX_IND (TarvosIII_CMD_DATAEX | TarvosIII_CMD_TYPE_IND)
+
+#define TarvosIII_CMD_RESET 0x05
+#define TarvosIII_CMD_RESET_REQ (TarvosIII_CMD_RESET | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_RESET_CNF (TarvosIII_CMD_RESET | TarvosIII_CMD_TYPE_CNF)
+#define TarvosIII_CMD_RESET_IND (TarvosIII_CMD_RESET | TarvosIII_CMD_TYPE_IND)
+
+#define TarvosIII_CMD_SET_CHANNEL 0x06
+#define TarvosIII_CMD_SET_CHANNEL_REQ (TarvosIII_CMD_SET_CHANNEL | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_SET_CHANNEL_CNF (TarvosIII_CMD_SET_CHANNEL | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_SET_DESTNETID 0x07
+#define TarvosIII_CMD_SET_DESTNETID_REQ (TarvosIII_CMD_SET_DESTNETID | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_SET_DESTNETID_CNF (TarvosIII_CMD_SET_DESTNETID | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_SET_DESTADDR 0x08
+#define TarvosIII_CMD_SET_DESTADDR_REQ (TarvosIII_CMD_SET_DESTADDR | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_SET_DESTADDR_CNF (TarvosIII_CMD_SET_DESTADDR | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_SET 0x09
+#define TarvosIII_CMD_SET_REQ (TarvosIII_CMD_SET | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_SET_CNF (TarvosIII_CMD_SET | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_GET 0x0A
+#define TarvosIII_CMD_GET_REQ (TarvosIII_CMD_GET | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_GET_CNF (TarvosIII_CMD_GET | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_RSSI 0x0D
+#define TarvosIII_CMD_RSSI_REQ (TarvosIII_CMD_RSSI | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_RSSI_CNF (TarvosIII_CMD_RSSI | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_SHUTDOWN 0x0E
+#define TarvosIII_CMD_SHUTDOWN_REQ (TarvosIII_CMD_SHUTDOWN | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_SHUTDOWN_CNF (TarvosIII_CMD_SHUTDOWN | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_STANDBY 0x0F
+#define TarvosIII_CMD_STANDBY_REQ (TarvosIII_CMD_STANDBY | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_STANDBY_CNF (TarvosIII_CMD_STANDBY | TarvosIII_CMD_TYPE_CNF)
+#define TarvosIII_CMD_STANDBY_IND (TarvosIII_CMD_STANDBY | TarvosIII_CMD_TYPE_IND)
+
+#define TarvosIII_CMD_SET_PAPOWER 0x11
+#define TarvosIII_CMD_SET_PAPOWER_REQ (TarvosIII_CMD_SET_PAPOWER | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_SET_PAPOWER_CNF (TarvosIII_CMD_SET_PAPOWER | TarvosIII_CMD_TYPE_CNF)
+
+#define TarvosIII_CMD_FACTORY_RESET 0x12
+#define TarvosIII_CMD_FACTORY_RESET_REQ (TarvosIII_CMD_FACTORY_RESET | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_FACTORY_RESET_CNF (TarvosIII_CMD_FACTORY_RESET | TarvosIII_CMD_TYPE_CNF)
+
+
+/* AMBER test commands */
+#define TarvosIII_CMD_PINGDUT 0x1F
+#define TarvosIII_CMD_PINGDUT_REQ (TarvosIII_CMD_PINGDUT | TarvosIII_CMD_TYPE_REQ)
+#define TarvosIII_CMD_PINGDUT_CNF (TarvosIII_CMD_PINGDUT | TarvosIII_CMD_TYPE_CNF)
+
+/* Masks for FLAGS */
+/* Sniffer mode is indicated by bit 1 of cfg-flags */
+#define TarvosIII_CFGFLAGS_SNIFFERMODEENABLE 0x0001
+#define TarvosIII_RPFLAGS_REPEATERENABLE 0X0001
+
+/* initialize the module TarvosIII
+    ret = TarvosIII_Init(115200, TarvosIII_PIN_RESET, TarvosIII_PIN_WAKEUP, TarvosIII_PIN_BOOT, RXcallback, AddressMode_0);
+    Debug_out("TarvosIII_Init", ret);*/
+
+uint8_t switchi = 0;
+
+/* Functions*/
+void TarvosIII_Init(){
+
+	/*
+	     • Applying a low signal to the MODE_1 pin during the reset till the module is booted up,
+		 starts the command mode.
+		 • Applying a high signal to the MODE_1 pin during the reset till the module is booted up,
+		 starts the transparent mode.
+	 */
+	//HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin, GPIO_PIN_SET);
+
+	if(switchi >= 0){
+
+
+		HAL_GPIO_WritePin(GPIOE, Tarvos_Reset_Pin, GPIO_PIN_RESET);
+		HAL_Delay(10);
+
+		/* initialize the boot pin */
+		/* HIGH for Firmware update
+		 * LOW for Std Mode
+		 */
+		HAL_GPIO_WritePin(GPIOE, Tarvos_Boot_Pin, GPIO_PIN_RESET);
+		HAL_Delay(10);
+		/* initialize the wakeup pin */
+		HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin, GPIO_PIN_SET);
+		HAL_Delay(10);
+		/* initialize the reset pin
+		 * * we have to define it as input/pull-up such that the reset button
+		 * on the base PCB can pull the pin level down if the button is pressed
+		 */
+		//HAL_GPIO_WritePin(GPIOE, Tarvos_Reset_Pin, GPIO_PIN_SET);
+		HAL_Delay(10);
+
+		HAL_GPIO_WritePin(GPIOE, Tarvos_Reset_Pin, GPIO_PIN_SET);
+		HAL_Delay(10);
+
+		/* initialize the boot pin */
+		/* HIGH for Firmware update
+		 * LOW for Std Mode
+		 */
+		HAL_GPIO_WritePin(GPIOE, Tarvos_Boot_Pin, GPIO_PIN_SET);
+		HAL_Delay(10);
+
+
+		/* initialize the wakeup pin */
+		HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin, GPIO_PIN_SET);
+		HAL_Delay(10);
+
+		switchi++;
+
+	}
+
+	/* empty the UART buffers */
+	//FlushSerial();
+
+	uint8_t length = sizeof(payload);
+
+	payload[0] = 0xAA;
+	payload[1] = 0x01;
+	payload[2] = length;
+	payload[3] = 0x01;
+	payload[4] = 0x35;
+	payload[5] = 0x55;
+
+
+
+	uint8_t CMD_Array[length + 4];
+	CMD_Array[0] = CMD_STX;		//0x02
+	CMD_Array[1] = 0x00;//TarvosIII_CMD_DATA_REQ;
+	CMD_Array[2] = length;
+	memcpy(&CMD_Array[3], &payload, length);
+	FillChecksum(CMD_Array,(uint8_t)sizeof(CMD_Array));
+
+	/* now send CMD_ARRAY */
+	HAL_UART_Transmit(&huart1, CMD_Array, (uint8_t)sizeof(CMD_Array), 1);
+	//SendBytes(CMD_ARRAY,sizeof(CMD_ARRAY));
+
+	/* wait for cnf */
+	HAL_Delay(50);
+
+
+}
+
+void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t Tx_UART_Data, uint8_t *timeout){
+	//if(*uart_exe_flag == 0){
+	  	//TarvosIII_Init();
+	HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin, GPIO_PIN_SET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
+	HAL_Delay(5);
+	HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin, GPIO_PIN_SET);
+
+	uint8_t length = sizeof(rxBuff);
+
+	payload[0] = 'A';
+
+	uint8_t CMD_Array[length + 4];
+	CMD_Array[0] = CMD_STX;
+	CMD_Array[1] = TarvosIII_CMD_DATA;
+	CMD_Array[2] = length;
+	memcpy(&CMD_Array[3], payload, length);
+	FillChecksum(CMD_Array,(uint8_t)sizeof(CMD_Array));
+
+		/* now send CMD_ARRAY */
+		HAL_UART_Transmit(&huart1, CMD_Array, length, 100);
+		//SendBytes(CMD_ARRAY,sizeof(CMD_ARRAY));
+
+		/* wait for cnf */
+		HAL_Delay(500);
+
+
+
+
+		//(*uart_exe_flag)++;
+	//}
+	/*________________________________________________________________________________________________________*/
+
+	/*HAL_Delay(50);
+
+
+
+	uint8_t test[] = "TEST1234";
+
+	// Send
+	if (HAL_UART_Transmit(&huart1, test, sizeof(test)-1, 200) == HAL_OK) {
+	} else {
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
+	}
+
+	HAL_Delay(1000);
+	*/
+
+	/*uint8_t ping[] = "PING\n";
+	while(1) {
+	  HAL_UART_Transmit(&huart1, ping, sizeof(ping)-1, HAL_MAX_DELAY);
+	  HAL_Delay(500);
+	}*/
+	/*
+	if (HAL_UART_Transmit(huart, Tx_UART_Data, 8, HAL_MAX_DELAY) != HAL_OK)
+	{
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);  // Fehler
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_RESET); // OK
+	}*/
+}
+
+static void FillChecksum(uint8_t* array, uint8_t length)
+{
+//    bool ret = false;
+
+    if ((length >= 4) && (array[0] == CMD_STX))
+    {
+        uint8_t checksum = 0;
+        uint8_t payload_length = array[2];
+        int i = 0;
+        for (i = 0;
+                i < payload_length + 3;
+                i++)
+        {
+            checksum ^= array[i];
+        }
+        array[payload_length + 3] = checksum;
+
+    }
+}

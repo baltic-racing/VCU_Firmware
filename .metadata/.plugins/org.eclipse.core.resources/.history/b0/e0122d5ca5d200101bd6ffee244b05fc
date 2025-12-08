@@ -1,0 +1,47 @@
+/*
+ * radio_tx.h
+ *
+ *  Created on: Oct 13, 2025
+ *      Author: Egquus
+ */
+
+#ifndef RADIO_TX_H_
+#define RADIO_TX_H_
+
+/* type used to check the response, when a command was sent to the TarvosIII */
+typedef enum CMD_Status_t
+{
+    CMD_Status_Success = 0x00,
+    CMD_Status_Failed,
+    CMD_Status_Invalid,
+    CMD_Status_Reset,
+} CMD_Status_t;
+
+typedef struct
+{
+    uint8_t Stx;
+    uint8_t Cmd;
+    uint8_t Length;
+    uint8_t Data[MAX_DATA_BUFFER + 1]; /* +1 for the CS */
+} CMD_Frame_t;
+
+typedef struct
+{
+    uint8_t cmd;                 /* variable to check if correct CMD has been confirmed */
+    CMD_Status_t status;         /* variable used to check the response (*_CNF), when a request (*_REQ) was sent to the TarvosIII */
+} CMD_Confirmation_t;
+
+
+
+
+void TarvosIII_Init();
+
+void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t Tx_UART_Data, uint8_t *timeout);
+
+static bool Wait4CNF(int max_time_ms, uint8_t expectedCmdConfirmation, CMD_Status_t expectedStatus, bool reset_confirmstate)
+
+static void FillChecksum(uint8_t* array, uint8_t length);
+
+
+
+#endif /* RADIO_TX_H_ */

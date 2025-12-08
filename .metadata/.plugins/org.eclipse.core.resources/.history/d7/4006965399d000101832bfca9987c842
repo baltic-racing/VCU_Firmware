@@ -1,0 +1,13 @@
+/*
+ * radio_tx.h
+ *
+ *  Created on: Oct 13, 2025
+ *      Author: Egquus
+ */
+
+#ifndef RADIO_TX_H_
+#define RADIO_TX_H_
+
+void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t *Tx_UART_Data, uint8_t *timeout);
+
+#endif /* RADIO_TX_H_ */

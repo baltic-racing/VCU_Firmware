@@ -1,0 +1,3 @@
+../Core/Src/radio_tx.c:121:6:TarvosIII_Init	48	dynamic
+../Core/Src/radio_tx.c:203:6:radio_TX	64	dynamic
+../Core/Src/radio_tx.c:267:13:FillChecksum	32	static

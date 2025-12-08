@@ -18,6 +18,7 @@
 
 extern uint8_t UART1_exe;
 extern uint8_t Tx_UART_Data[8];
+extern uint8_t timeout;
 
 uint8_t tim2_100ms = 0;
 uint8_t tim2_1ms = 0;
@@ -25,16 +26,18 @@ uint8_t tim2_1ms = 0;
 /*Functions*/
 
 void System_control(){
-	Tx_UART_Data[0] = 01001000;
-	Tx_UART_Data[1] = 01100001;
-	Tx_UART_Data[2] = 01101100;
-	Tx_UART_Data[3] = 01101100;
-	Tx_UART_Data[4] = 01101111;
-	Tx_UART_Data[5] = 00100000;
-	Tx_UART_Data[6] = 01010100;
-	Tx_UART_Data[7] = 01011001;
+	Tx_UART_Data[0] = 0x01;
+	Tx_UART_Data[1] = 0b01100001;
+	Tx_UART_Data[2] = 0b01101100;
+	Tx_UART_Data[3] = 0b01101100;
+	Tx_UART_Data[4] = 0b01101111;
+	Tx_UART_Data[5] = 0b00100000;
+	Tx_UART_Data[6] = 0b01010100;
+	Tx_UART_Data[7] = 0b01011001;
 
-	radio_TX(&huart1, UART1_exe, Tx_UART_Data, 100);
+	TarvosIII_Init();
+	//radio_TX(&huart1, &UART1_exe, Tx_UART_Data, &timeout);
+
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){

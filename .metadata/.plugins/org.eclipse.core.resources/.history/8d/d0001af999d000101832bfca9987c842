@@ -1,0 +1,108 @@
+/*
+ * radio_tx.c
+ *
+ *  Created on: Oct 13, 2025
+ *      Author: Egquus
+ */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "radio_tx.h"
+#include "stdlib.h"
+#include "stdbool.h"
+#include "usart.h"
+#include "gpio.h"
+
+/* Variables*/
+uint8_t UART1_exe = 0;
+uint8_t Tx_UART_Data[8];
+uint8_t timeout = 100;
+uint8_t rxBuff[8];
+
+//uint8_t CMD_Array[4];
+#define CMD_STX 0x02
+
+/* Functions*/
+void radio_TX(UART_HandleTypeDef *huart, uint8_t *uart_exe_flag, uint8_t *Tx_UART_Data, uint8_t *timeout){
+	//if(*uart_exe_flag == 0){
+	  	//TarvosIII_Init();
+	HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin, GPIO_PIN_SET);			//Alles was über UART gesendet wird, wird 1zu1 übersetzt
+	HAL_Delay(5);
+	HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin, GPIO_PIN_SET);
+
+	uint8_t length = sizeof(rxBuff);
+
+	uint8_t CMD_Array[lenght + 4];
+	CMD_Array[0] = CMD_STX;
+	CMD_Array[1] = Tx_UART_Data;
+	CMD_Array[2] = length;
+	memcpy(&CMD_Array[3], payload, length);
+	if(FillChecksum(CMD_ARRAY,sizeof(CMD_ARRAY)))
+	{
+
+		/* now send CMD_ARRAY */
+		HAL_UART_Transmit(&huart1, rxBuff, length-1, 100);
+		//SendBytes(CMD_ARRAY,sizeof(CMD_ARRAY));
+
+		/* wait for cnf */
+		ret = Wait4CNF(CMD_WAIT_TIME, TarvosIII_CMD_DATA_CNF, CMD_Status_Success, true);
+	}
+
+
+
+
+		//(*uart_exe_flag)++;
+	//}
+	/*________________________________________________________________________________________________________*/
+
+	/*HAL_Delay(50);
+
+
+
+	uint8_t test[] = "TEST1234";
+
+	// Send
+	if (HAL_UART_Transmit(&huart1, test, sizeof(test)-1, 200) == HAL_OK) {
+	} else {
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
+	}
+
+	HAL_Delay(1000);
+	*/
+
+	/*uint8_t ping[] = "PING\n";
+	while(1) {
+	  HAL_UART_Transmit(&huart1, ping, sizeof(ping)-1, HAL_MAX_DELAY);
+	  HAL_Delay(500);
+	}*/
+	/*
+	if (HAL_UART_Transmit(huart, Tx_UART_Data, 8, HAL_MAX_DELAY) != HAL_OK)
+	{
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);  // Fehler
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_RESET); // OK
+	}*/
+}
+
+static bool FillChecksum(uint8_t* array, uint8_t length)
+{
+    bool ret = false;
+
+    if ((length >= 4) && (array[0] == CMD_STX))
+    {
+        uint8_t checksum = 0;
+        uint8_t payload_length = array[2];
+        int i = 0;
+        for (i = 0;
+                i < payload_length + 3;
+                i++)
+        {
+            checksum ^= array[i];
+        }
+        array[payload_length + 3] = checksum;
+        ret = true;
+    }
+    return ret;
+}

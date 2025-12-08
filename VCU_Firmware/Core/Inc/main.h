@@ -59,6 +59,10 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define Tarvos_WAKE_UP_Pin GPIO_PIN_11
 #define Tarvos_WAKE_UP_GPIO_Port GPIOE
+#define Tarvos_Reset_Pin GPIO_PIN_12
+#define Tarvos_Reset_GPIO_Port GPIOE
+#define Tarvos_Boot_Pin GPIO_PIN_13
+#define Tarvos_Boot_GPIO_Port GPIOE
 #define lv_active_Pin GPIO_PIN_15
 #define lv_active_GPIO_Port GPIOE
 #define LED_Blue_Pin GPIO_PIN_14

@@ -1,0 +1,10 @@
+14:12:06 **** Build of configuration Debug for project AMS_Firmware ****
+make -j16 all 
+arm-none-eabi-size  AMS_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  66836	    940	   8448	  76224	  129c0	AMS_Firmware.elf
+Finished building: default.size.stdout
+ 
+
+14:12:07 Build Finished. 0 errors, 0 warnings. (took 660ms)
+

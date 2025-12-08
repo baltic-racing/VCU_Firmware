@@ -1,0 +1,2 @@
+../Core/Src/System_control.c:28:6:System_control	8	static
+../Core/Src/System_control.c:43:6:HAL_TIM_PeriodElapsedCallback	16	static

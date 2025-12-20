@@ -1,0 +1,23 @@
+/*
+ * Pitot_control.c
+ *
+ *  Created on: 14.12.2025
+ *      Author: Egquus
+ */
+#include "Pitot_control.h"
+
+
+uint8_t TX_buffer[8];	//DATA to send
+
+
+void I2C_transceive(){
+
+	TX_buffer [0] = 0x00;
+	TX_buffer [1] = 0x00;
+	TX_buffer [2] = 0x00;
+	TX_buffer [3] = 0x00;
+	TX_buffer [4] = 0x00;
+	TX_buffer [5] = 0x00;
+	TX_buffer [6] = 0x00;
+	TX_buffer [7] = 0x00;
+}

@@ -1,0 +1,15 @@
+/*
+ * Radio_control.h
+ *
+ *  Created on: Dec 10, 2025
+ *      Author: Egquus
+ */
+
+#ifndef INC_RADIO_CONTROL_H_
+#define INC_RADIO_CONTROL_H_
+
+void TarvosIII_Init();
+
+static void FillChecksum(uint8_t* array, uint8_t length);
+
+#endif /* INC_RADIO_CONTROL_H_ */

@@ -28,6 +28,8 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_uart.h"
+#include "stm32f7xx_hal_i2c.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -57,6 +59,12 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Tarvos_WAKE_UP_Pin GPIO_PIN_11
+#define Tarvos_WAKE_UP_GPIO_Port GPIOE
+#define Tarvos_Reset_Pin GPIO_PIN_12
+#define Tarvos_Reset_GPIO_Port GPIOE
+#define Tarvos_Boot_Pin GPIO_PIN_13
+#define Tarvos_Boot_GPIO_Port GPIOE
 #define lv_active_Pin GPIO_PIN_15
 #define lv_active_GPIO_Port GPIOE
 #define LED_Blue_Pin GPIO_PIN_14
@@ -65,6 +73,10 @@ void Error_Handler(void);
 #define LED_RED_GPIO_Port GPIOD
 #define r2d_Pin GPIO_PIN_9
 #define r2d_GPIO_Port GPIOA
+#define Tarvos_Mode_Pin GPIO_PIN_11
+#define Tarvos_Mode_GPIO_Port GPIOA
+#define Tarvos_RTS_Pin GPIO_PIN_12
+#define Tarvos_RTS_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

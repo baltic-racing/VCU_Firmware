@@ -1,0 +1,2 @@
+../Core/Src/Radio_control.c:32:13:FillChecksum	32	static
+../Core/Src/Radio_control.c:49:6:Radio_transieve	48	dynamic

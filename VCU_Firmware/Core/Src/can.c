@@ -21,9 +21,32 @@
 #include "can.h"
 
 /* USER CODE BEGIN 0 */
+/* Variables*/
+//Error_state
+extern volatile uint8_t VCU_state;
 
-uint8_t test1[8];
-uint8_t test2[8];
+//Can communication
+CAN_TxHeaderTypeDef TxHeader;
+CAN_RxHeaderTypeDef RxHeader;
+
+uint8_t CAN1_exe = 0;
+uint8_t CAN2_exe = 0;
+uint8_t TxData[8];
+uint8_t RxData[8];
+uint32_t TxMailbox;
+uint8_t CAN_state_500 = 1;
+uint8_t CAN_state_100 = 1;
+uint8_t CAN_state_10 = 1;
+uint8_t CAN_state_1;
+
+
+/*________________________________________________________________________________________________*/
+
+extern uint8_t motor_control;
+extern uint16_t brake_current;
+extern uint16_t APPS_I;
+extern uint16_t APPS_II;
+extern uint16_t lenkwinkel;
 
 uint8_t r2d_bit = 0;
 uint8_t ts_on = 0;
@@ -35,8 +58,6 @@ uint16_t brake_pressure_front = 0;
 uint16_t dc_voltage_inv = 0;
 uint16_t dc_current_inv_l = 0;
 uint16_t dc_current_inv_r = 0;
-
-extern uint16_t brake_current;
 
 uint16_t motor_temp_r = 0;
 uint16_t inv_temp_r = 0;
@@ -56,15 +77,6 @@ uint8_t INV_R_INV_Motor_fault[8] = {0};
 uint8_t INV_L_AC_DC[8] = {0};
 uint8_t INV_R_AC_DC[8] = {0};
 
-
-volatile uint64_t last10 = 0;
-volatile uint64_t last20 = 0;
-volatile uint64_t last100 = 0;
-volatile uint64_t last500 = 0;
-volatile uint8_t send_can_100_message = 0;
-volatile uint8_t send_can_50_message = 0;
-volatile uint8_t send_can_10_message = 0;
-volatile uint8_t send_can_2_message = 0;
 
 //CAN IDs of Inverters, 0x1F for Broadcasting
 const uint8_t Node_ID_INV_R = 19; //right
@@ -123,81 +135,150 @@ CAN_TxHeaderTypeDef VCU_INV2_header_R = {((0x21 << 5) | Node_ID_INV_R), 0, CAN_I
 CAN_TxHeaderTypeDef VCU_INV3_header_L = {((0x22 << 5) | Node_ID_INV_L), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef VCU_INV3_header_R = {((0x22 << 5) | Node_ID_INV_R), 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
-// transmit CAN Message
-void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData)
-{
-	uint32_t TxMailbox;
-	uint32_t freeMailboxes = HAL_CAN_GetTxMailboxesFreeLevel(&hcan);;
 
-	if(freeMailboxes > 0)
-	{
-		if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+
+/* Functions*/
+void CAN_transceive(CAN_HandleTypeDef *hcan, uint8_t *can_exe_flag, uint8_t *TxData, uint8_t *RxData){
+	if(*can_exe_flag == 0){
+		HAL_CAN_Start(hcan);
+		HAL_CAN_ActivateNotification(hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+
+		(*can_exe_flag)++;
+	}
+
+	/*________________________________________________________________________________________________________*/
+
+	if(hcan == &hcan1){
+			TxHeader.DLC = 8; // Data length
+			TxHeader.IDE = CAN_ID_STD; // Standard-ID (11-bit)
+			TxHeader.RTR = CAN_RTR_DATA;
+			TxHeader.StdId = 0x200; // ID
+
+			RxHeader.DLC = 8; // Data length
+			RxHeader.IDE = CAN_ID_STD; // Standard-ID (11-bit)
+			RxHeader.RTR = CAN_RTR_DATA;
+			RxHeader.StdId = 0x300; // ID
+		}
+	if(hcan == &hcan2){
+			TxHeader.DLC = 8; // Data length
+			TxHeader.IDE = CAN_ID_STD; // Standard-ID (11-bit)
+			TxHeader.RTR = CAN_RTR_DATA;
+			TxHeader.StdId = 0x200; // ID
+
+			RxHeader.DLC = 8; // Data length
+			RxHeader.IDE = CAN_ID_STD; // Standard-ID (11-bit)
+			RxHeader.RTR = CAN_RTR_DATA;
+			RxHeader.StdId = 0x300; // ID
+		}
+
+	/*________________________________________________________________________________________________________*/
+
+	CAN_transmit();
+
+	CAN_receive();
+}
+
+void CAN_transmit(){
+
+	TxData[0] = APPS_I;
+	TxData[1] = APPS_I >> 8;
+	TxData[2] = APPS_II;
+	TxData[3] = APPS_II >> 8;
+	TxData[4] = dc_voltage_inv >> 8;
+	TxData[5] = dc_voltage_inv;
+	//TxData[6] = lenkwinkel;
+	TxData[7] = ts_ready;
+
+
+	/*________________________________________________________________________________________________________*/
+
+	if(CAN_state_100 == 0){
+		if(HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK){
+			VCU_state = 1; //Enter Error_state
+			//Error_Handler();
+		}
+
+		/*___________________HV-Inverter data___________________*/
+
+		if(HAL_CAN_AddTxMessage(&hcan1, &VCU_INV2_header_L, INV_L_AC_DC, &TxMailbox) != HAL_OK){
+			VCU_state = 1; //Enter Error_state
+			//Error_Handler();
+		}
+
+		if(HAL_CAN_AddTxMessage(&hcan1, &VCU_INV2_header_R, INV_R_AC_DC, &TxMailbox) != HAL_OK){
+			VCU_state = 1; //Enter Error_state
+			//Error_Handler();
+		}
+	}
+
+	if(CAN_state_500 == 0){
+		if(HAL_CAN_AddTxMessage(&hcan1, &VCU_INV3_header_L, INV_L_INV_Motor_fault, &TxMailbox) != HAL_OK){
+			VCU_state = 1; //Enter Error_state
+			//Error_Handler();
+		}
+
+		if(HAL_CAN_AddTxMessage(&hcan1, &VCU_INV3_header_R, INV_R_INV_Motor_fault, &TxMailbox) != HAL_OK){
+			VCU_state = 1; //Enter Error_state
+			//Error_Handler();
+		}
+	}
+/*____________________________________________________________________________________________________________*/
+
+	/*TxData[0] = 0x00;
+	TxData[1] = 0x00;
+	TxData[2] = 0x00;
+	TxData[3] = 0xCD;
+	TxData[4] = 0xAB;
+	TxData[5] = 0xCD;
+	TxData[6] = 0xAB;
+	TxData[7] = 0xCD;
+	*/
+
+	/*________________________________________________________________________________________________________*/
+
+	/*___________________HV-Inverter control___________________*/
+
+	if(CAN_state_100 == 0){
+		if(HAL_CAN_AddTxMessage(&hcan2, &VCUA_header_Broadcast, dc_current_limiter, &TxMailbox) != HAL_OK){
+			VCU_state = 1; //Enter Error_state
+			//Error_Handler();
+		}
+
+		//Rekuperation
+		if(APPS_I < 50 && recu_active == 1 && brake_pressure_front > 10)
 		{
-		    static uint8_t retries = 0;
-		    if (retries < 5) {  // Maximum retries
-		        retries++;
-		        CAN_TX(hcan, TxHeader, TxData);
-		    } else {
-		        retries = 0;  // Reset retry count after a failure
-		        // Optionally, handle the failure (e.g., by logging it)
-		        HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
-		    }
+			HAL_CAN_AddTxMessage(&hcan2, &VCU2_header_R, Brake_Current_R, &TxMailbox);
+			HAL_CAN_AddTxMessage(&hcan2, &VCU2_header_L, Brake_Current_L, &TxMailbox);
 		}
 		else
 		{
-
-		}
-
-	}
-	else
-	{
-		CAN_TX(hcan, TxHeader, TxData);
-	}
-
-}
-
-void CAN_TX_INV(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData)
-{
-	uint32_t TxMailbox2;
-	if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox2) != HAL_OK)
-	{
-		CAN_TX_INV(hcan, TxHeader, TxData);		//retry when failed
-	}
-}
-
-/*
-void CAN_RX(CAN_HandleTypeDef hcan)
-{
-
-	CAN_RxHeaderTypeDef RxHeader;
-	uint8_t RxData[8];
-
-
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
-	{
-		static uint8_t retries = 0;
-		if (retries < 5) {  // Maximum retries
-			retries++;
-			CAN_RX(hcan, RxHeader, RxData);
-		} else {
-			retries = 0;  // Reset retry count after a failure
-			// Optionally, handle the failure (e.g., by logging it)
-			HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);
+			Brake_Current_broadcast[0] = 0;
+			Brake_Current_broadcast[1] = 0;
+			HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_L, AC_Current_L, &TxMailbox);
+			HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_R, AC_Current_R, &TxMailbox);
 		}
 	}
 }
-*/
 
-void CAN_RX(CAN_HandleTypeDef hcan)
-{
+void CAN_receive(){
 
-	CAN_RxHeaderTypeDef RxHeader;
-	uint8_t RxData[8];
-
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
-	{
-
+	if(HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK){
+		VCU_state = 2; //Enter Error_state
+		//Error_Handler();
 	}
+
+	/*________________________________________________________________________________________________________*/
+
+
+
+/*____________________________________________________________________________________________________________*/
+
+	if(HAL_CAN_GetRxMessage(&hcan2, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK){
+		VCU_state = 2; //Enter Error_state
+		//Error_Handler();
+	}
+
+	/*________________________________________________________________________________________________________*/
 
 	if(RxHeader.StdId == 0x750)
 	{
@@ -227,211 +308,8 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 	}
 }
 
-void CAN_RX_INV(CAN_HandleTypeDef hcan)
-{
-	CAN_RxHeaderTypeDef RxHeader;
-	uint8_t RxData[8];
-
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
-	{
-
-	}
-
-	if(RxHeader.StdId == ((0x22 << 5) | Node_ID_INV_L))
-	{
-		INV_L_INV_Motor_fault[0] = RxData[0];
-		INV_L_INV_Motor_fault[1] = RxData[1];
-		INV_L_INV_Motor_fault[2] = RxData[2];
-		INV_L_INV_Motor_fault[3] = RxData[3];
-		INV_L_INV_Motor_fault[4] = RxData[4];
-	}
-
-	if(RxHeader.StdId == ((0x22 << 5) | Node_ID_INV_R))
-	{
-		INV_R_INV_Motor_fault[0] = RxData[0];
-		INV_R_INV_Motor_fault[1] = RxData[1];
-		INV_R_INV_Motor_fault[2] = RxData[2];
-		INV_R_INV_Motor_fault[3] = RxData[3];
-		INV_R_INV_Motor_fault[4] = RxData[4];
-	}
-
-	if(RxHeader.StdId == ((0x20 << 5) | Node_ID_INV_L))
-	{
-		dc_voltage_inv = ((uint16_t)RxData[6] << 8) | RxData[7];
-	}
-
-	if(RxHeader.StdId == ((0x21 << 5) | Node_ID_INV_L))
-	{
-		INV_L_AC_DC[0] = RxData[0];
-		INV_L_AC_DC[1] = RxData[1];
-		INV_L_AC_DC[2] = RxData[2];
-		INV_L_AC_DC[3] = RxData[3];
-
-		dc_current_inv_l = ((uint16_t)RxData[2] << 8) | RxData[3];
-	}
-
-	if(RxHeader.StdId == ((0x21 << 5) | Node_ID_INV_R))
-	{
-		INV_R_AC_DC[0] = RxData[0];
-		INV_R_AC_DC[1] = RxData[1];
-		INV_R_AC_DC[2] = RxData[2];
-		INV_R_AC_DC[3] = RxData[3];
-
-		dc_current_inv_r = ((uint16_t)RxData[2] << 8) | RxData[3];
-	}
-}
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	if(htim -> Instance == TIM2)
-	{
-		CAN_interrupt();
-	}
-}
-
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-    CAN_RX(hcan1);
-    CAN_RX_INV(hcan2);
-}
-
-void CAN_interrupt()
-{
-	if(HAL_GetTick()>= last500 + 500) //2Hz
-	{
-		send_can_2_message = 1;
-		last500 = HAL_GetTick();
-	}
-
-	if (HAL_GetTick()>= last100 + 100) //10Hz
-		{
-			//CAN_10();
-			send_can_10_message = 1;
-			HAL_GPIO_TogglePin(GPIOD, LED_Blue_Pin);	// toggle LED
-			last100 = HAL_GetTick();
-		}
-
-	/*
-	if (HAL_GetTick()>= last20 + 20) //50 Hz
-		{
-			//CAN_50();
-			send_can_50_message = 1;
-			last20 = HAL_GetTick();
-		}
-*/
-	if (HAL_GetTick()>= last10 + 10) //100 Hz
-	{
-			//CAN_100();
-			send_can_100_message = 1;
-			last10 = HAL_GetTick();
-	}
-
-}
-
-void CAN_2()		// CAN Messages transmitted with 2 Hz
-{
-
-	uint32_t TxMailbox;
-
-	if(send_can_2_message > 0)
-	{
-		send_can_2_message = 0;
-		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV3_header_L, INV_L_INV_Motor_fault, &TxMailbox);
-		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV3_header_R, INV_R_INV_Motor_fault, &TxMailbox);
-		//CAN_TX(hcan1, VCU_INV3_header_L, INV_L_INV_Motor_fault);
-		//CAN_TX(hcan1, VCU_INV3_header_R, INV_R_INV_Motor_fault);
-	}
-
-}
-
-void CAN_50()		// CAN Messages transmitted with 50 Hz
-{
-
-	if(send_can_50_message > 0)
-	{
-		send_can_50_message = 0;
-	}
-
-}
-
-void CAN_10()		// CAN Messages transmitted with 10 Hz
-{
-	if(send_can_10_message > 0)
-	{
-		send_can_10_message = 0;
-		//CAN_TX(hcan1, VCU1_header_L, test2);
-	}
-
-}
-
-extern uint16_t APPS_I;
-extern uint16_t APPS_II;
-extern uint8_t lenkwinkel;
-
-void CAN_100()
-{
-	test2[0] = APPS_I;
-	test2[1] = APPS_I >> 8;
-	test2[2] = APPS_II;
-	test2[3] = APPS_II >> 8;
-	test2[4] = dc_voltage_inv >> 8;
-	test2[5] = dc_voltage_inv;
-	test2[6] = lenkwinkel;
-	test2[7] = ts_ready;
-
-	uint8_t test3[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-
-	test3[0] = 0x02;
-	test3[1] = 0xEE;
-
-	if(send_can_100_message > 0)
-	{
-		send_can_100_message = 0;
-		//CAN_TX(hcan1, VCU5_header_R, test2);
-
-		//CAN_TX(hcan1, VCU_header, test2);
-
-		uint32_t TxMailbox;
-		HAL_CAN_AddTxMessage(&hcan1, &VCU_header, test2, &TxMailbox);
-		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV2_header_L, INV_L_AC_DC, &TxMailbox);
-		HAL_CAN_AddTxMessage(&hcan1, &VCU_INV2_header_R, INV_R_AC_DC, &TxMailbox);
 
 
-		//HAL_CAN_AddTxMessage(&hcan2, &VCUA_header_L, test3, &TxMailbox);
-		HAL_CAN_AddTxMessage(&hcan2, &VCUA_header_Broadcast, dc_current_limiter, &TxMailbox);
-		/*
-		if (HAL_CAN_AddTxMessage(&hcan1, &VCU_header, test2, &TxMailbox) != HAL_OK)
-		{
-
-		}
-		*/
-		//CAN_TX_INV(hcan2, VCU_header, test2);
-
-		/*
-		AC_Current_L[6] = inv_temp_l >> 8;
-		AC_Current_L[7] = inv_temp_l;
-		*/
-
-		  //Rekuperation
-			if(APPS_I < 50 && recu_active == 1 && brake_pressure_front > 10)
-			{
-				HAL_CAN_AddTxMessage(&hcan2, &VCU2_header_R, Brake_Current_R, &TxMailbox);
-				HAL_CAN_AddTxMessage(&hcan2, &VCU2_header_L, Brake_Current_L, &TxMailbox);
-				//CAN_TX(hcan2, VCU2_header_R, Brake_Current_R);
-				//CAN_TX(hcan2, VCU2_header_L, Brake_Current_L);
-			}
-			else
-			{
-				Brake_Current_broadcast[0] = 0;
-				Brake_Current_broadcast[1] = 0;
-				HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_L, AC_Current_L, &TxMailbox);
-				HAL_CAN_AddTxMessage(&hcan2, &VCU1_header_R, AC_Current_R, &TxMailbox);
-				//CAN_TX(hcan2, VCU1_header_L, AC_Current_L);
-				//CAN_TX(hcan2, VCU1_header_R, AC_Current_R);
-			}
-		//CAN_TX(hcan2, VCU2_header_Broadcast, Brake_Current_broadcast);
-	}
-}
 
 
 /* USER CODE END 0 */

@@ -1,6 +1,6 @@
-../Core/Src/sensor_control.c:36:6:APPS_getValues	32	static
-../Core/Src/sensor_control.c:62:6:APPS_get	8	static
-../Core/Src/sensor_control.c:69:6:APPS_safty_car	4	static
-../Core/Src/sensor_control.c:85:6:APPS_calc	4	static
-../Core/Src/sensor_control.c:118:6:APPS_measure	8	static
-../Core/Src/sensor_control.c:131:6:APPS_init	8	static
+../Core/Src/Sensor_control.c:35:6:APPS_getValues	32	static
+../Core/Src/Sensor_control.c:61:6:APPS_get	8	static
+../Core/Src/Sensor_control.c:68:6:APPS_safty_car	4	static
+../Core/Src/Sensor_control.c:84:6:APPS_calc	4	static
+../Core/Src/Sensor_control.c:117:6:APPS_measure	8	static
+../Core/Src/Sensor_control.c:130:6:APPS_init	8	static

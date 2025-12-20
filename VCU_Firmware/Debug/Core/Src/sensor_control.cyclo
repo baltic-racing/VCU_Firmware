@@ -1,6 +1,6 @@
-../Core/Src/sensor_control.c:36:6:APPS_getValues	5
-../Core/Src/sensor_control.c:62:6:APPS_get	1
-../Core/Src/sensor_control.c:69:6:APPS_safty_car	5
-../Core/Src/sensor_control.c:85:6:APPS_calc	6
-../Core/Src/sensor_control.c:118:6:APPS_measure	1
-../Core/Src/sensor_control.c:131:6:APPS_init	1
+../Core/Src/Sensor_control.c:35:6:APPS_getValues	5
+../Core/Src/Sensor_control.c:61:6:APPS_get	1
+../Core/Src/Sensor_control.c:68:6:APPS_safty_car	5
+../Core/Src/Sensor_control.c:84:6:APPS_calc	6
+../Core/Src/Sensor_control.c:117:6:APPS_measure	1
+../Core/Src/Sensor_control.c:130:6:APPS_init	1

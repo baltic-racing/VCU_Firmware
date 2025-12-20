@@ -17,17 +17,19 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <Sensor_control.h>
+#include <System_control.h>
 #include "main.h"
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
 #include "tim.h"
 #include "gpio.h"
+#include "usart.h"
+#include "Radio_control.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "motor_control.h"
-#include "sensor_control.h"
 #include "stdbool.h"
 /* USER CODE END Includes */
 
@@ -61,6 +63,8 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+volatile uint8_t VCU_state = 0;
+volatile bool Error_Handler_state = false;
 
 /* USER CODE END 0 */
 
@@ -103,6 +107,8 @@ int main(void)
   MX_TIM2_Init();
   MX_ADC2_Init();
   MX_TIM5_Init();
+  MX_USART1_UART_Init();
+  MX_I2C3_I2C_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start(&htim5);
@@ -131,13 +137,47 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-	 motor_control();
-    /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+  /*
+   .______________________________________________________.
+   | Error_state 	| Description             | Kill-Code |
+   |======================================================|
+   |		0		| No Error				  |	          |
+   |		1		| CAN transmission failed |	  101	  |
+   |		2		| CAN receive failed      |	  102	  |
+   |		3		| USB Massage too long	  |   103	  |
+   |
+   |______________________________________________________|
+   */
+  while (VCU_state == 0)
+  {
+	  System_control();
+
+	  HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
   }
+
+/*		Error_states		*/
+
+  if(VCU_state != 0){
+	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_RESET);		// Red-LED on and join the Error_state
+
+	  HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_RESET);
+  }
+
+  if(VCU_state == 1){
+
+  }
+
+  if(VCU_state == 2){
+
+  }
+
+  if((VCU_state >> 2) == 1){
+  	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);		// Red-LED off and left the Error_state
+  }
+  /* USER CODE END WHILE */
+
+  /* USER CODE BEGIN 3 */
   /* USER CODE END 3 */
 }
 

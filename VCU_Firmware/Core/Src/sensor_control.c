@@ -4,8 +4,7 @@
  *  Created on: May 12, 2025
  *      Author: shoot
  */
-#include "sensor_control.h"
-
+#include <Sensor_control.h>
 #include "stdbool.h"
 
 uint16_t APPS_I_raw_adc = 0;
@@ -22,7 +21,7 @@ uint8_t APPS_check = 0;
 uint16_t APPS_I = 0;
 uint16_t APPS_II = 0;
 
-extern uint8_t start_motor_control;
+extern uint8_t motor_control;
 
 #define APPS_READ_TIMEOUT 100
 
@@ -71,13 +70,13 @@ void APPS_safty_car()													// T11.8.7 - The APPS signals are SCS, see T11
 	if(apps_I_raw < 30 || apps_II_raw < 30)
 	{
 		//error_state = 1;												// short too ground or open lead
-		start_motor_control = 0;
+		motor_control = 0;
 		return;
 	}
 	if(apps_I_raw > 4000 || apps_II_raw > 4000)
 	{
 		//error_state = 2;												// short too supply
-		start_motor_control = 0;
+		motor_control = 0;
 		return;
 	}
 }

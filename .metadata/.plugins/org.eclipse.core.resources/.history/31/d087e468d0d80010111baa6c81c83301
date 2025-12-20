@@ -1,0 +1,98 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file    can.h
+  * @brief   This file contains all the function prototypes for
+  *          the can.c file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __CAN_H__
+#define __CAN_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+/* USER CODE BEGIN Includes */
+
+/*Includes*/
+#include "main.h"
+#include "System_control.h"
+#include "Sensor_control.h"
+#include "tim.h"
+/* USER CODE END Includes */
+
+extern CAN_HandleTypeDef hcan1;
+extern CAN_HandleTypeDef hcan2;
+
+/* USER CODE BEGIN Private defines */
+extern uint8_t motor_control;
+extern uint16_t brake_current;
+extern uint16_t APPS_I;
+extern uint16_t APPS_II;
+extern uint8_t lenkwinkel;
+
+uint8_t r2d_bit = 0;
+uint8_t ts_on = 0;
+uint8_t ts_ready = 0;
+uint8_t SA = 0;
+uint8_t recu_active = 0;
+
+uint16_t brake_pressure_front = 0;
+uint16_t dc_voltage_inv = 0;
+uint16_t dc_current_inv_l = 0;
+uint16_t dc_current_inv_r = 0;
+
+uint16_t motor_temp_r = 0;
+uint16_t inv_temp_r = 0;
+uint16_t motor_temp_l = 0;
+uint16_t inv_temp_l = 0;
+
+uint8_t AC_Current_L[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t AC_Current_R[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t Brake_Current_L[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t Brake_Current_R[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+uint8_t Brake_Current_broadcast[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+
+uint8_t dc_current_limiter[8] = {0, 0, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+
+uint8_t INV_L_INV_Motor_fault[8] = {0};
+uint8_t INV_R_INV_Motor_fault[8] = {0};
+uint8_t INV_L_AC_DC[8] = {0};
+uint8_t INV_R_AC_DC[8] = {0};
+
+/* USER CODE END Private defines */
+
+void MX_CAN1_Init(void);
+void MX_CAN2_Init(void);
+
+/* USER CODE BEGIN Prototypes */
+/* Functions*/
+void CAN_transceive(CAN_HandleTypeDef *hcan, uint8_t *can_exe_flag, uint8_t *TxData, uint8_t *RxData);
+
+void CAN_transmit();
+void CAN_receive();
+
+/* USER CODE END Prototypes */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __CAN_H__ */
+

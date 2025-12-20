@@ -1,0 +1,6 @@
+../Core/Src/System_control.c:85:6:System_control	8	static
+../Core/Src/System_control.c:138:6:e_diff	16	static
+../Core/Src/System_control.c:201:6:dc_current_limiter_fcn	16	static
+../Core/Src/System_control.c:239:9:calculate_ac_current	16	static
+../Core/Src/System_control.c:244:9:calculate_brake_current	16	static
+../Core/Src/System_control.c:250:6:HAL_TIM_PeriodElapsedCallback	16	static

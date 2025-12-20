@@ -30,13 +30,17 @@ extern "C" {
 
 /* USER CODE BEGIN Includes */
 
+/*Includes*/
+#include "System_control.h"
+#include "Sensor_control.h"
+#include "tim.h"
 /* USER CODE END Includes */
 
 extern CAN_HandleTypeDef hcan1;
-
 extern CAN_HandleTypeDef hcan2;
 
 /* USER CODE BEGIN Private defines */
+
 
 /* USER CODE END Private defines */
 
@@ -44,18 +48,11 @@ void MX_CAN1_Init(void);
 void MX_CAN2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t *TxData);
-void CAN_TX_INV(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData);
-void CAN_RX(CAN_HandleTypeDef hcan);
-//void CAN_interrupt(void);
-void CAN_2(void);
-void CAN_50(void);
-void CAN_10(void);
-void CAN_100(void);
-void CAN_interrupt(void);
-void send_can(void);
+/* Functions*/
+void CAN_transceive(CAN_HandleTypeDef *hcan, uint8_t *can_exe_flag, uint8_t *TxData, uint8_t *RxData);
 
-void CAN_TX_test(CAN_HandleTypeDef hcan, uint32_t stdId, uint8_t *message);
+void CAN_transmit();
+void CAN_receive();
 
 /* USER CODE END Prototypes */
 

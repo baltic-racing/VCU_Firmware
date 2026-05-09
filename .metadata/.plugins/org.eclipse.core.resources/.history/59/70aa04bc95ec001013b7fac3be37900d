@@ -1,0 +1,77 @@
+/*
+* Pitot_control.c
+*
+*  Created on: 14.12.2025
+*      Author: Egquus
+*/
+#include "Pitot_control.h"
+#include "i2c.h"
+#define PDUS_ADDRESS (0x78<<1)	//PDUS4
+uint8_t TX_buffer[8];	//DATA to send
+uint8_t RX_buffer[4] = {};	//Received DATA
+uint8_t Pitot_pressure; //
+uint16_t RX_buffery;
+
+
+const uint16_t OUT_Pmin = 3277;// [digits]
+const float P_min = -100.0f;// [kPa]
+const float P_max = 1000.0f;// [kPa]
+float SEN_P = 0.04196f;// [kPa/digit]
+
+uint16_t Raw_pressure;
+float Pressure;
+
+void I2C_transceive(){
+
+	TX_buffer [0] = 0x00;
+	TX_buffer [1] = 0x01;
+	TX_buffer [2] = 0x00;
+	TX_buffer [3] = 0x01;
+	TX_buffer [4] = 0b10101010;
+	TX_buffer [5] = 0xFF;
+	TX_buffer [6] = 0b10101010;
+	TX_buffer [7] = 0x01;
+
+
+	HAL_I2C_Master_Transmit(&hi2c3, PDUS_ADDRESS, TX_buffer, sizeof(TX_buffer), 100); //Sending in Blocking mode
+
+	HAL_StatusTypeDef ret;
+
+	// 1) Dummy-Write (nur Adresse)
+	ret = HAL_I2C_Master_Transmit(&hi2c3, PDUS_ADDRESS, 0x22, sizeof(0x22), 100);
+
+	// 2) Kurz warten
+	HAL_Delay(1);
+
+	HAL_I2C_Master_Receive(&hi2c3, PDUS_ADDRESS, RX_buffer, sizeof(RX_buffer), 100);
+
+	Raw_pressure = (RX_buffer[0] << 8) | RX_buffer[1];
+	Pressure = ((float)(Raw_pressure - OUT_Pmin) * SEN_P) + P_min;// [kPa]
+
+	/*RX_buffery = RX_buffer[1]<<8;
+	RX_buffery |= RX_buffer[2];
+	RX_buffery = RX_buffery - P_MIN_VAL_PDUS;
+	Pitot_pressure = ((RX_buffery * 4.196)/(100)) + 100;*/
+}
+
+
+
+/*
+   * Caution: This sensor uses 5V Vcc and logic levels.
+   * Level conversion to 3.3V is required to talk with a STM32 or any
+   * other 3.3V MCU.
+   * This sensor only supports I2C read operation and returns either
+   * 2 or 4 bytes when the sensor address is written to the I2C bus.
+   * Sending a register address is not required.
+   * The first 2 bytes returned are the raw pressure value and the next 2
+   * bytes are the raw temperature values.
+   *
+   * See chapter "reading digital output data" of the PDUS user manual for
+   * the protocol.
+   *
+   * 1st I2C master sends sensor's I2C address (PDUS_ADDRESS_I2C) with read
+   * bit set and waits for ACK by sensor.
+   * 2nd I2C master read either 2 or 4 bytes back from the sensor; the slave
+   * (sensor) will send up to 4 bytes.
+   * Master has to ACK each byte and provide clock.
+   */

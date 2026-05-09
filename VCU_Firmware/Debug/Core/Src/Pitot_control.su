@@ -1,1 +1,2 @@
-../Core/Src/Pitot_control.c:15:6:I2C_transceive	16	static
+../Core/Src/Pitot_control.c:37:6:Scan_I2C	16	static
+../Core/Src/Pitot_control.c:50:6:I2C_transceive	32	static

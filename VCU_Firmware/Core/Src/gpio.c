@@ -53,13 +53,13 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin|Tarvos_Boot_Pin|Tarvos_Reset_Pin|lv_active_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, Tarvos_WAKE_UP_Pin|Tarvos_Boot_Pin|Tarvos_Reset_Pin, GPIO_PIN_RESET);//|lv_active_Pin
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, LED_Blue_Pin|LED_RED_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, r2d_Pin|Tarvos_Mode_Pin|Tarvos_RTS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, Tarvos_Mode_Pin|Tarvos_RTS_Pin, GPIO_PIN_RESET);//r2d_Pin|
 
   /*Configure GPIO pins : PC4 PC5 */
   GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
@@ -68,7 +68,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = Tarvos_WAKE_UP_Pin|Tarvos_Boot_Pin|Tarvos_Reset_Pin|lv_active_Pin;
+  GPIO_InitStruct.Pin = Tarvos_WAKE_UP_Pin|Tarvos_Boot_Pin|Tarvos_Reset_Pin;//|lv_active_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -82,7 +82,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
-  GPIO_InitStruct.Pin = r2d_Pin|Tarvos_Mode_Pin|Tarvos_RTS_Pin;
+  GPIO_InitStruct.Pin = Tarvos_Mode_Pin|Tarvos_RTS_Pin;//r2d_Pin|
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

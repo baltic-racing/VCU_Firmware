@@ -20,6 +20,7 @@
 #include <Sensor_control.h>
 #include <System_control.h>
 #include "main.h"
+#include "i2c.h"
 #include "adc.h"
 #include "can.h"
 #include "dma.h"
@@ -27,6 +28,7 @@
 #include "gpio.h"
 #include "usart.h"
 #include "Radio_control.h"
+#include "Pitot_control.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,6 +67,8 @@ static void MPU_Config(void);
 /* USER CODE BEGIN 0 */
 volatile uint8_t VCU_state = 0;
 volatile bool Error_Handler_state = false;
+
+uint8_t err_Bus;
 
 /* USER CODE END 0 */
 
@@ -108,7 +112,14 @@ int main(void)
   MX_ADC2_Init();
   MX_TIM5_Init();
   MX_USART1_UART_Init();
-  MX_I2C3_I2C_Init();
+
+  __HAL_RCC_I2C3_FORCE_RESET();
+  HAL_Delay(1);
+  __HAL_RCC_I2C3_RELEASE_RESET();
+
+
+  //MX_I2C3_I2C_Init();
+  MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start(&htim5);
@@ -121,7 +132,7 @@ int main(void)
   HAL_CAN_Start(&hcan1);
   HAL_CAN_Start(&hcan2);
 
-  if (HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
+  /*if (HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
   {
 	  Error_Handler();
   }
@@ -130,7 +141,7 @@ int main(void)
   if (HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING) != HAL_OK)
   {
 	  Error_Handler();
-  }
+  }*/
 
 
   /* USER CODE END 2 */
@@ -146,22 +157,28 @@ int main(void)
    |		1		| CAN transmission failed |	  101	  |
    |		2		| CAN receive failed      |	  102	  |
    |		3		| USB Massage too long	  |   103	  |
+   |		4		| I2C Communication failed|   104	  |
    |
    |______________________________________________________|
    */
   while (VCU_state == 0)
   {
-	  System_control();
 
-	  HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
+	  //I2C_transceive();
+
+	  //Radio_transieve();
+	  TarvosIII_Init();
+	  HAL_Delay(500);
+
+	  //System_control();
   }
 
 /*		Error_states		*/
 
   if(VCU_state != 0){
-	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_RESET);		// Red-LED on and join the Error_state
+	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);		// Red-LED on and join the Error_state
 
-	  HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_RESET);
+	  //HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_RESET);
   }
 
   if(VCU_state == 1){
@@ -172,8 +189,12 @@ int main(void)
 
   }
 
+  if(VCU_state == 4){
+
+  }
+
   if((VCU_state >> 2) == 1){
-  	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);		// Red-LED off and left the Error_state
+  	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_RESET);		// Red-LED off and left the Error_state
   }
   /* USER CODE END WHILE */
 
@@ -278,6 +299,7 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+	  HAL_GPIO_WritePin(GPIOD, LED_RED_Pin, GPIO_PIN_SET);		// Red-LED on and join the Error_state
   }
   /* USER CODE END Error_Handler_Debug */
 }

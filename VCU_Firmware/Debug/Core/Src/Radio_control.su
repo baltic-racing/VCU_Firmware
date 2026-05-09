@@ -1,2 +1,3 @@
-../Core/Src/Radio_control.c:32:13:FillChecksum	32	static
-../Core/Src/Radio_control.c:49:6:Radio_transieve	48	dynamic
+../Core/Src/Radio_control.c:132:6:TarvosIII_Init	56	dynamic
+../Core/Src/Radio_control.c:285:6:radio_TX	64	dynamic
+../Core/Src/Radio_control.c:349:6:FillChecksum	32	static

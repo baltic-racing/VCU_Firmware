@@ -84,7 +84,8 @@ float steering_brake_current_reduction_table[101] = {	0.999,0.999,0.999,0.999,0.
 
 void System_control(){
 
-	Radio_transieve();
+	//Radio_transieve();
+	//I2C_transceive();
 
 	if(!APPS_check && HAL_GetTick() > 1000)
 	{

@@ -1,14 +1,136 @@
-08:47:03 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+17:33:37 **** Incremental Build of configuration Debug for project VCU_Firmware ****
 make -j16 all 
-arm-none-eabi-gcc "../Core/Src/Pitot_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/Pitot_control.d" -MT"Core/Src/Pitot_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/Pitot_control.o"
+arm-none-eabi-gcc "../Core/Src/Radio_control.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F767xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/Radio_control.d" -MT"Core/Src/Radio_control.o" --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -o "Core/Src/Radio_control.o"
+../Core/Src/Radio_control.c:45: warning: "CMD_STX" redefined
+   45 | #define CMD_STX 0x02/////////////////////////////////////////////////////////////////////////////////////////////////
+      | 
+In file included from ../Core/Src/Radio_control.c:17:
+../Core/Inc/radio_control.h:11: note: this is the location of the previous definition
+   11 | #define CMD_STX 0x0E
+      | 
+../Core/Src/Radio_control.c: In function 'TarvosIII_Init':
+../Core/Src/Radio_control.c:193:49: warning: implicit declaration of function 'lroundf' [-Wimplicit-function-declaration]
+  193 |                 int16_t pressure_i16 = (int16_t)lroundf(Pressure * 10.0f); // signed 0.1 kPa
+      |                                                 ^~~~~~~
+../Core/Src/Radio_control.c:23:1: note: include '<math.h>' or provide a declaration of 'lroundf'
+   22 | #include "Pitot_control.h"
+  +++ |+#include <math.h>
+   23 | 
+../Core/Src/Radio_control.c:193:49: warning: incompatible implicit declaration of built-in function 'lroundf' [-Wbuiltin-declaration-mismatch]
+  193 |                 int16_t pressure_i16 = (int16_t)lroundf(Pressure * 10.0f); // signed 0.1 kPa
+      |                                                 ^~~~~~~
+../Core/Src/Radio_control.c:193:49: note: include '<math.h>' or provide a declaration of 'lroundf'
+../Core/Src/Radio_control.c:198:59: warning: implicit declaration of function 'fmaxf' [-Wimplicit-function-declaration]
+  198 |                 uint16_t airspeed_u16 = (uint16_t)lroundf(fmaxf(airspeed, 0.0f) *10.0f);
+      |                                                           ^~~~~
+../Core/Src/Radio_control.c:198:59: note: include '<math.h>' or provide a declaration of 'fmaxf'
+../Core/Src/Radio_control.c:198:59: warning: incompatible implicit declaration of built-in function 'fmaxf' [-Wbuiltin-declaration-mismatch]
+../Core/Src/Radio_control.c:198:59: note: include '<math.h>' or provide a declaration of 'fmaxf'
+../Core/Src/Radio_control.c:246:34: warning: implicit declaration of function 'FillChecksum' [-Wimplicit-function-declaration]
+  246 |                 CMD_Array[len] = FillChecksum(CMD_Array, len);
+      |                                  ^~~~~~~~~~~~
+../Core/Src/Radio_control.c:253:33: warning: unused variable 'staty' [-Wunused-variable]
+  253 |                         uint8_t staty = HAL_UART_GetError(&huart1);
+      |                                 ^~~~~
+../Core/Src/Radio_control.c: At top level:
+../Core/Src/Radio_control.c:349:6: warning: conflicting types for 'FillChecksum'; have 'void(uint8_t *, uint8_t)' {aka 'void(unsigned char *, unsigned char)'}
+  349 | void FillChecksum(uint8_t* array, uint8_t length)
+      |      ^~~~~~~~~~~~
+../Core/Src/Radio_control.c:246:34: note: previous implicit declaration of 'FillChecksum' with type 'void(uint8_t *, uint8_t)' {aka 'void(unsigned char *, unsigned char)'}
+  246 |                 CMD_Array[len] = FillChecksum(CMD_Array, len);
+      |                                  ^~~~~~~~~~~~
 arm-none-eabi-gcc -o "VCU_Firmware.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\Marek\Documents\GitHub\VCU_Firmware\VCU_Firmware\STM32F767VITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="VCU_Firmware.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: VCU_Firmware.elf
  
 arm-none-eabi-size  VCU_Firmware.elf 
 arm-none-eabi-objdump -h -S VCU_Firmware.elf  > "VCU_Firmware.list"
    text	   data	    bss	    dec	    hex	filename
-  29704	    876	   2444	  33024	   8100	VCU_Firmware.elf
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
 Finished building: default.size.stdout
  
 Finished building: VCU_Firmware.list
+ 
+17:33:52 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+17:38:20 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+14:17:15 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+14:17:32 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:19:55 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:20:06 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:20:13 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:30:35 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:48:24 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+15:51:51 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+16:28:41 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
+ 
+16:28:46 **** Incremental Build of configuration Debug for project VCU_Firmware ****
+make -j16 all 
+arm-none-eabi-size  VCU_Firmware.elf 
+   text	   data	    bss	    dec	    hex	filename
+  28348	     16	   2408	  30772	   7834	VCU_Firmware.elf
+Finished building: default.size.stdout
  

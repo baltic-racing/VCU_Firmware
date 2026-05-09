@@ -8,9 +8,9 @@
 #ifndef INC_RADIO_CONTROL_H_
 #define INC_RADIO_CONTROL_H_
 
-#define CMD_STX 0x02
+#define CMD_STX 0x0E
 #define TarvosIII_CMD_DATA 0x00
-#define CMD_ETX 0x55
+#define CMD_ETX 0x0F
 
 
 #define CMD_WAIT_TIME 500
@@ -128,5 +128,6 @@ extern uint8_t INV_L_AC_DC[8];
 extern uint8_t INV_R_AC_DC[8];
 
 void Radio_transieve();
+
 
 #endif /* INC_RADIO_CONTROL_H_ */

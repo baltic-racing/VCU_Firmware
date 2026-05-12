@@ -2,5 +2,5 @@
 ../Core/Src/sensor_control.c:62:6:APPS_get	8	static
 ../Core/Src/sensor_control.c:69:6:APPS_safty_car	4	static
 ../Core/Src/sensor_control.c:85:6:APPS_calc	4	static
-../Core/Src/sensor_control.c:118:6:APPS_measure	8	static
-../Core/Src/sensor_control.c:131:6:APPS_init	8	static
+../Core/Src/sensor_control.c:126:6:APPS_measure	8	static
+../Core/Src/sensor_control.c:139:6:APPS_init	8	static

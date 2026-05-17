@@ -11,11 +11,11 @@
 uint16_t APPS_I_raw_adc = 0;
 //double APPS_I_adc_min = 700;
 uint16_t APPS_I_adc_min = 0;
-uint16_t APPS_I_adc_max = 1800;
+uint16_t APPS_I_adc_max = 1740;
 uint16_t APPS_II_raw_adc = 0;
 //double APPS_II_adc_min = 2850;
 uint16_t APPS_II_adc_min = 0;
-uint16_t APPS_II_adc_max = 1800;
+uint16_t APPS_II_adc_max = 905;
 
 uint8_t APPS_check = 0;
 
@@ -99,7 +99,7 @@ void APPS_calc()
 		APPS_I = (uint16_t)(((uint32_t)(APPS_I_raw_adc - APPS_I_adc_min) * 1000) / (APPS_I_adc_max - APPS_I_adc_min));
 		APPS_II = (uint16_t)(((uint32_t)(APPS_II_raw_adc - APPS_II_adc_min) * 1000) / (APPS_II_adc_max - APPS_II_adc_min));
 
-		if(APPS_I < 33)
+		if(APPS_I < 50)
 		{
 			APPS_I = 0;
 		}
@@ -107,7 +107,7 @@ void APPS_calc()
 		{
 			APPS_I = 1000;
 		}
-		if(APPS_II < 33)
+		if(APPS_II < 50)
 		{
 			APPS_II = 0;
 		}
@@ -141,8 +141,8 @@ void APPS_init()
 	APPS_getValues(&APPS_I_raw_adc, &APPS_II_raw_adc);
 
 	// 10 fungiert als Filter gegen Schwankungen
-	APPS_I_adc_min = APPS_I_raw_adc +5;
-	APPS_II_adc_min = APPS_II_raw_adc +5;
+	APPS_I_adc_min = APPS_I_raw_adc +10;
+	APPS_II_adc_min = APPS_II_raw_adc +10;
 
 	APPS_check = 1;
 

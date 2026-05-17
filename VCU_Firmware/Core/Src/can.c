@@ -32,6 +32,7 @@ uint8_t SA = 0;
 uint8_t recu_active = 0;
 
 uint16_t brake_pressure_front = 0;
+uint16_t brake_pressure_rear = 0;
 uint16_t dc_voltage_inv = 0;
 uint16_t dc_current_inv_l = 0;
 uint16_t dc_current_inv_r = 0;
@@ -223,6 +224,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 	if(RxHeader.StdId == 0x401)
 	{
 		brake_pressure_front = ((uint16_t)RxData[1] << 8) | RxData[0];
+		brake_pressure_rear =((uint16_t)RxData[3]<< 8 ) | RxData[2];
 	}
 
 	if(RxHeader.StdId == 0x200)

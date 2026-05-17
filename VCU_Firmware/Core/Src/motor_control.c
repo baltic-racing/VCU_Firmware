@@ -126,6 +126,7 @@ extern uint16_t APPS_I;
 extern uint8_t APPS_check;
 extern uint8_t recu_active;
 extern uint16_t brake_pressure_front;
+extern uint16_t brake_pressure_rear;
 
 uint32_t r2d_time = 0;
 uint32_t r2d_check = 0;
@@ -325,7 +326,7 @@ void motor_control()
 
 	if(ts_ready)
 	{
-		if(!start_motor_control && r2d_bit && (brake_pressure_front > 50))	// Inspection sheet: Pressing brake pedal WHILE activation is necessary
+		if(!start_motor_control && r2d_bit && (brake_pressure_front > 50) && (brake_pressure_rear > 30))	// Inspection sheet: Pressing brake pedal WHILE activation is necessary
 		{
 			if(HAL_GetTick() - r2d_check >= r2d_time_duration)
 			{

@@ -1,8 +1,9 @@
 /*
  * motor_control.h
+ * VCU-Fahrsteuerung: Motorvorgaben, Strombegrenzung und E-Differenzial.
  *
- *  Created on: Mar 28, 2025
- *      Author: racin
+ * Created on: Mar 28, 2025
+ * Author: racin
  */
 
 #ifndef INC_MOTOR_CONTROL_H_

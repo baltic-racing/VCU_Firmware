@@ -856,10 +856,10 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
  8000854:	40026440 	.word	0x40026440
 
 08000858 <CAN_RX>:
-	}
 }
 */
 
+/* Liest empfangene Nachrichten vom Fahrzeug-CAN (CAN1). */
 void CAN_RX(CAN_HandleTypeDef hcan)
 {
  8000858:	b084      	sub	sp, #16
@@ -984,6 +984,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 08000920 <CAN_RX_INV>:
 
+/* Liest empfangene Nachrichten vom Inverter-CAN (CAN2). */
 void CAN_RX_INV(CAN_HandleTypeDef hcan)
 {
  8000920:	b084      	sub	sp, #16
@@ -1176,6 +1177,7 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 
 08000a54 <HAL_TIM_PeriodElapsedCallback>:
 
+/* TIM2 ruft die zeitgesteuerten CAN-Aufgaben auf. */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
  8000a54:	b580      	push	{r7, lr}
@@ -1410,10 +1412,10 @@ void CAN_2()		// CAN Messages transmitted with 2 Hz
  8000c18:	20000148 	.word	0x20000148
 
 08000c1c <CAN_100>:
-extern uint16_t APPS_I;
 extern uint16_t APPS_II;
 extern uint8_t start_motor_control;
 
+/* Stellt VCU- und Inverter-Nachrichten für den 100-Hz-Sendezyklus zusammen. */
 void CAN_100()
 {
  8000c1c:	b580      	push	{r7, lr}
@@ -2629,6 +2631,9 @@ int main(void)
   MX_TIM5_Init();
  80013ec:	f001 f866 	bl	80024bc <MX_TIM5_Init>
   /* USER CODE BEGIN 2 */
+  /* TIM2 läuft mit Interrupt, TIM5 als freilaufender Timer.
+   * Beide Pedal-ADC-Kanäle werden per DMA erfasst; danach starten CAN1 und CAN2.
+   */
   HAL_TIM_Base_Start_IT(&htim2);
  80013f0:	4815      	ldr	r0, [pc, #84]	@ (8001448 <main+0x88>)
  80013f2:	f004 f8b3 	bl	800555c <HAL_TIM_Base_Start_IT>
@@ -2679,11 +2684,11 @@ int main(void)
   {
 	  Error_Handler();
  800143c:	f000 f8ae 	bl	800159c <Error_Handler>
-
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  /* Führt die VCU-Steuerlogik fortlaufend aus. */
 	 motor_control();
  8001440:	f000 f8ee 	bl	8001620 <motor_control>
  8001444:	e7fc      	b.n	8001440 <main+0x80>
@@ -3731,7 +3736,8 @@ void motor_control()
 
 08001b74 <e_diff>:
 
-
+/* Berechnet die Stromvorgaben für linkes und rechtes Rad aus
+ * Fahrpedal, Bremsdruck und Lenkwinkel. */
 void e_diff()
 {
  8001b74:	b580      	push	{r7, lr}
@@ -4728,10 +4734,10 @@ void APPS_calc()
  8002280:	20000758 	.word	0x20000758
 
 08002284 <APPS_init>:
-	APPS_II_raw_adc = HAL_ADC_GetValue(&hadc2); // get the adc value
-	HAL_ADC_Stop(&hadc2); // stop adc
-}
 
+/* Speichert die aktuellen Pedal-Rohwerte plus 10 ADC-Schritte
+ * als untere Grenzen für die spätere Skalierung.
+ */
 void APPS_init()
 {
  8002284:	b580      	push	{r7, lr}

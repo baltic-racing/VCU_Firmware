@@ -359,7 +359,8 @@ void motor_control()
 	HAL_GPIO_WritePin(lv_active_GPIO_Port, lv_active_Pin, GPIO_PIN_SET);
 }
 
-
+/* Berechnet die Stromvorgaben für linkes und rechtes Rad aus
+ * Fahrpedal, Bremsdruck und Lenkwinkel. */
 void e_diff()
 {
 	//twos complement

@@ -1,6 +1,6 @@
 /*
  * sensor_control.h
- *
+ * Schnittstelle für das Einlesen und Skalieren der zwei APPS-Signale.
  *  Created on: May 12, 2025
  *      Author: shoot
  */

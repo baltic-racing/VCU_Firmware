@@ -21,7 +21,9 @@
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
-
+/* TIM2 erzeugt Interrupts für zeitgesteuerte VCU-Aufgaben.
+ * TIM5 liefert per Update-Ereignis (TRGO) den Trigger für ADC1 und ADC2.
+ */
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim2;

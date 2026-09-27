@@ -1,6 +1,7 @@
 /*
  * sensor_control.c
- *
+ * Verarbeitet die zwei APPS-Pedalsignale: ADC-Rohwerte lesen,
+ * beim Start kalibrieren und auf 0 bis 1000 skalieren.
  *  Created on: May 12, 2025
  *      Author: shoot
  */
@@ -136,6 +137,9 @@ void APPS_measure()
 	HAL_ADC_Stop(&hadc2); // stop adc
 }
 
+/* Speichert die aktuellen Pedal-Rohwerte plus 10 ADC-Schritte
+ * als untere Grenzen für die spätere Skalierung.
+ */
 void APPS_init()
 {
 	APPS_getValues(&APPS_I_raw_adc, &APPS_II_raw_adc);

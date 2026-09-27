@@ -1,5 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
+ * VCU-Startpunkt: initialisiert Timer, Pedal-ADCs und beide CAN-Schnittstellen.
+ * Die laufende Fahrzeugsteuerung erfolgt in motor_control().
   ******************************************************************************
   * @file           : main.c
   * @brief          : Main program body
@@ -104,6 +106,9 @@ int main(void)
   MX_ADC2_Init();
   MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
+  /* TIM2 läuft mit Interrupt, TIM5 als freilaufender Timer.
+   * Beide Pedal-ADC-Kanäle werden per DMA erfasst; danach starten CAN1 und CAN2.
+   */
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Base_Start(&htim5);
 
@@ -133,6 +138,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  /* Führt die VCU-Steuerlogik fortlaufend aus. */
 	 motor_control();
     /* USER CODE END WHILE */
 

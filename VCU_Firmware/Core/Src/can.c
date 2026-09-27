@@ -192,6 +192,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 }
 */
 
+/* Liest empfangene Nachrichten vom Fahrzeug-CAN (CAN1). */
 void CAN_RX(CAN_HandleTypeDef hcan)
 {
 
@@ -233,6 +234,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 	}
 }
 
+/* Liest empfangene Nachrichten vom Inverter-CAN (CAN2). */
 void CAN_RX_INV(CAN_HandleTypeDef hcan)
 {
 	CAN_RxHeaderTypeDef RxHeader;
@@ -287,6 +289,7 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 	}
 }
 
+/* TIM2 ruft die zeitgesteuerten CAN-Aufgaben auf. */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim -> Instance == TIM2)
@@ -374,6 +377,7 @@ extern uint16_t APPS_I;
 extern uint16_t APPS_II;
 extern uint8_t start_motor_control;
 
+/* Stellt VCU- und Inverter-Nachrichten für den 100-Hz-Sendezyklus zusammen. */
 void CAN_100()
 {
 	test2[0] = APPS_I;

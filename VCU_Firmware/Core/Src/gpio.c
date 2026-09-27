@@ -29,7 +29,10 @@
 /* Configure GPIO                                                             */
 /*----------------------------------------------------------------------------*/
 /* USER CODE BEGIN 1 */
-
+/* VCU-Ausgänge: lv_active (PE15), LEDs (PD14/PD15) und r2d (PA9).
+ * Alle starten LOW. Wo und wann sie geschaltet werden, steht in den
+ * jeweiligen Anwendungsfunktionen.
+ */
 /* USER CODE END 1 */
 
 /** Configure pins as

@@ -1,5 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
+ * APPS I: ADC1 an PC4, APPS II: ADC2 an PC5.
+ * TIM5 triggert die Wandlungen; DMA schreibt die Rohwerte fortlaufend
+ * in apps_I_raw und apps_II_raw (Start der DMA-Transfers in main.c).
   ******************************************************************************
   * @file    adc.c
   * @brief   This file provides code for the configuration

@@ -44,9 +44,12 @@ void MX_CAN1_Init(void);
 void MX_CAN2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+/* Senden und Empfangen von Nachrichten auf Fahrzeug-CAN und Inverter-CAN. */
 void CAN_TX(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t *TxData);
 void CAN_TX_INV(CAN_HandleTypeDef hcan, CAN_TxHeaderTypeDef TxHeader, uint8_t* TxData);
 void CAN_RX(CAN_HandleTypeDef hcan);
+
+/* Funktionen für die zeitgesteuerte Übertragung der CAN-Nachrichten. */
 //void CAN_interrupt(void);
 void CAN_2(void);
 void CAN_50(void);

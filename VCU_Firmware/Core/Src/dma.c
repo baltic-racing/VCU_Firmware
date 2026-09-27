@@ -22,7 +22,10 @@
 #include "dma.h"
 
 /* USER CODE BEGIN 0 */
-
+/* DMA2_Stream0 überträgt ADC1/APPS I, DMA2_Stream2 ADC2/APPS II
+ * jeweils vom ADC in den Speicher. Die Stream-Einstellungen stehen
+ * in adc.c; hier werden DMA-Takt und Interrupts aktiviert.
+ */
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/

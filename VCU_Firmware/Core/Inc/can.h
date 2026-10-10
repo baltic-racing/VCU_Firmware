@@ -60,6 +60,7 @@ void send_can(void);
 
 void CAN_TX_test(CAN_HandleTypeDef hcan, uint32_t stdId, uint8_t *message);
 
+void CAN_ERPM_Forward(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

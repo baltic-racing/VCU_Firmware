@@ -69,7 +69,31 @@ volatile uint8_t send_can_100_message = 0;
 volatile uint8_t send_can_50_message = 0;
 volatile uint8_t send_can_10_message = 0;
 volatile uint8_t send_can_2_message = 0;
+static volatile uint8_t inv_status_data[2][8] = {{0}};
+static volatile uint8_t inv_status_pending[2] = {0};
 
+static volatile uint32_t inv_status_last_rx[2] = {0};
+static volatile uint8_t inv_status_seen[2] = {0};
+/* Weiterleitung der Inverter-Statuspakete auf den Haupt-Bus. */
+static CAN_TxHeaderTypeDef inv_status_header[2] =
+{
+    {
+        .StdId = 0x40A,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .DLC = 8,
+        .TransmitGlobalTime = DISABLE
+    },
+    {
+        .StdId = 0x413,
+        .ExtId = 0,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .DLC = 8,
+        .TransmitGlobalTime = DISABLE
+    }
+};
 //CAN IDs of Inverters, 0x1F for Broadcasting
 const uint8_t Node_ID_INV_R = 19; //right
 const uint8_t Node_ID_INV_L = 10;	//left
@@ -201,7 +225,7 @@ void CAN_RX(CAN_HandleTypeDef hcan)
 
 	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
 	{
-
+		 return;
 	}
 
 	if(RxHeader.StdId == 0x750)
@@ -240,9 +264,18 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 	CAN_RxHeaderTypeDef RxHeader;
 	uint8_t RxData[8];
 
-	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
+	if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0,
+	                        &RxHeader, RxData) != HAL_OK)
 	{
+	    return;
+	}
 
+	/* Nur vollständige Standard-Datennachrichten auswerten. */
+	if (RxHeader.IDE != CAN_ID_STD ||
+	    RxHeader.RTR != CAN_RTR_DATA ||
+	    RxHeader.DLC != 8U)
+	{
+	    return;
 	}
 
 	if(RxHeader.StdId == ((0x22 << 5) | Node_ID_INV_L))
@@ -263,9 +296,35 @@ void CAN_RX_INV(CAN_HandleTypeDef hcan)
 		INV_R_INV_Motor_fault[4] = RxData[4];
 	}
 
-	if(RxHeader.StdId == ((0x20 << 5) | Node_ID_INV_L))
+	/* Linker Inverter: CAN-ID 0x40A. */
+	if (RxHeader.StdId == ((0x20U << 5) | Node_ID_INV_L))
 	{
-		dc_voltage_inv = ((uint16_t)RxData[6] << 8) | RxData[7];
+	    /* Bestehende Spannungsübernahme erhalten. */
+	    dc_voltage_inv = ((uint16_t)RxData[6] << 8) | RxData[7];
+
+	    /* Alle acht Bytes unverändert speichern.
+	     * ERPM bleibt in Byte 0–3.
+	     */
+	    for (uint32_t i = 0; i < 8U; i++)
+	    {
+	        inv_status_data[0][i] = RxData[i];
+	    }
+	    inv_status_last_rx[0] = HAL_GetTick();
+	    inv_status_seen[0] = 1U;
+	    inv_status_pending[0] = 1U;
+	}
+
+	/* Rechter Inverter: CAN-ID 0x413. */
+	if (RxHeader.StdId == ((0x20U << 5) | Node_ID_INV_R))
+	{
+	    for (uint32_t i = 0; i < 8U; i++)
+	    {
+	        inv_status_data[1][i] = RxData[i];
+	    }
+
+	    inv_status_last_rx[1] = HAL_GetTick();
+	    inv_status_seen[1] = 1U;
+	    inv_status_pending[1] = 1U;
 	}
 
 	if(RxHeader.StdId == ((0x21 << 5) | Node_ID_INV_L))
@@ -300,8 +359,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-    CAN_RX(hcan1);
-    CAN_RX_INV(hcan2);
+    if (hcan->Instance == CAN1)
+    {
+        CAN_RX(hcan1);
+    }
+    else if (hcan->Instance == CAN2)
+    {
+        CAN_RX_INV(hcan2);
+    }
 }
 
 void CAN_interrupt()
@@ -377,6 +442,62 @@ extern uint16_t APPS_I;
 extern uint16_t APPS_II;
 extern uint8_t start_motor_control;
 
+void CAN_ERPM_Forward(void)
+{
+    static uint32_t last_sent[2] = {0};
+
+    uint32_t now = HAL_GetTick();
+
+    for (uint32_t motor = 0; motor < 2U; motor++)
+    {
+        /* Je Motor höchstens alle 10 ms senden. */
+    	if ((uint32_t)(now - last_sent[motor]) < 100U)
+        {
+            continue;
+        }
+
+        /* Ersatznachricht:
+         * ERPM = 0x80000000 bedeutet bei uns "keine Daten".
+         * Duty und Spannung werden hier mit 0 gefüllt.
+         */
+        uint8_t data[8] = {
+            0x80, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00
+        };
+
+        uint32_t mailbox;
+        uint32_t primask = __get_PRIMASK();
+
+        __disable_irq();
+
+        now = HAL_GetTick();
+
+        /* Nur aktuelle Inverterdaten übernehmen. */
+        if (inv_status_seen[motor] != 0U &&
+            (uint32_t)(now - inv_status_last_rx[motor]) < 500U)
+        {
+            for (uint32_t i = 0; i < 8U; i++)
+            {
+                data[i] = inv_status_data[motor][i];
+            }
+        }
+
+        __set_PRIMASK(primask);
+
+        /* Auch ohne Inverterdaten regelmäßig senden. */
+        if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U)
+        {
+            if (HAL_CAN_AddTxMessage(
+                    &hcan1,
+                    &inv_status_header[motor],
+                    data,
+                    &mailbox) == HAL_OK)
+            {
+                last_sent[motor] = now;
+            }
+        }
+    }
+}
 /* Stellt VCU- und Inverter-Nachrichten für den 100-Hz-Sendezyklus zusammen. */
 void CAN_100()
 {
@@ -425,7 +546,6 @@ void CAN_100()
 
 	}
 }
-
 
 /* USER CODE END 0 */
 
@@ -623,6 +743,28 @@ void MX_CAN2_Init(void)
   canfilterconfig_inv_4.SlaveStartFilterBank = 14;  // how many filters to assign to the CAN1 (master can)
 
   HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv_4);
+  /* Zusätzlich Statuspaket 0x413 vom rechten Inverter empfangen. */
+  CAN_FilterTypeDef canfilterconfig_inv_5 = {0};
+
+  canfilterconfig_inv_5.FilterActivation = CAN_FILTER_ENABLE;
+  canfilterconfig_inv_5.FilterBank = 19;
+  canfilterconfig_inv_5.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+
+  canfilterconfig_inv_5.FilterIdHigh =
+      ((0x20U << 5) | Node_ID_INV_R) << 5;
+  canfilterconfig_inv_5.FilterIdLow = 0;
+
+  canfilterconfig_inv_5.FilterMaskIdHigh = 0x7FFU << 5;
+  canfilterconfig_inv_5.FilterMaskIdLow = 0x0006U;
+
+  canfilterconfig_inv_5.FilterMode = CAN_FILTERMODE_IDMASK;
+  canfilterconfig_inv_5.FilterScale = CAN_FILTERSCALE_32BIT;
+  canfilterconfig_inv_5.SlaveStartFilterBank = 14;
+
+  if (HAL_CAN_ConfigFilter(&hcan2, &canfilterconfig_inv_5) != HAL_OK)
+  {
+      Error_Handler();
+  }
   /* USER CODE END CAN2_Init 2 */
 
 }

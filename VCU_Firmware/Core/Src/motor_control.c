@@ -180,11 +180,12 @@ void CAN_Recovery_Task()
 void motor_control()
 {
 
-	if(HAL_GetTick() > 2000)
+	if(HAL_GetTick() > 2000U)
 	{
 		CAN_Recovery_Task();
 	    CAN_100();
 	    CAN_2();
+	    CAN_ERPM_Forward();
 	}
 
 	if(!APPS_check && HAL_GetTick() > 1000)

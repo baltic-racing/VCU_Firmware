@@ -9,8 +9,9 @@
 ../Core/Src/can.c:421:6:CAN_50	2
 ../Core/Src/can.c:431:6:CAN_10	2
 ../Core/Src/can.c:445:6:CAN_ERPM_Forward	8
-../Core/Src/can.c:502:6:CAN_100	6
-../Core/Src/can.c:556:6:MX_CAN1_Init	2
-../Core/Src/can.c:645:6:MX_CAN2_Init	3
-../Core/Src/can.c:774:6:HAL_CAN_MspInit	5
-../Core/Src/can.c:845:6:HAL_CAN_MspDeInit	5
+../Core/Src/can.c:502:6:CAN_SendAmsHeartbeat	2
+../Core/Src/can.c:526:6:CAN_100	6
+../Core/Src/can.c:580:6:MX_CAN1_Init	2
+../Core/Src/can.c:669:6:MX_CAN2_Init	3
+../Core/Src/can.c:798:6:HAL_CAN_MspInit	5
+../Core/Src/can.c:869:6:HAL_CAN_MspDeInit	5

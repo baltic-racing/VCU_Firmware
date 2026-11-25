@@ -498,6 +498,30 @@ void CAN_ERPM_Forward(void)
         }
     }
 }
+
+void CAN_SendAmsHeartbeat(void)
+{
+    static uint32_t last_send_ms;
+    uint32_t now_ms = HAL_GetTick();
+
+    if ((now_ms - last_send_ms) < 100U)
+    {
+        return;
+    }
+    last_send_ms = now_ms;
+
+    CAN_TxHeaderTypeDef header = {
+        .StdId = 0x310U,
+        .IDE = CAN_ID_STD,
+        .RTR = CAN_RTR_DATA,
+        .DLC = 1U
+    };
+    uint8_t data[1] = {0x01U};
+    uint32_t mailbox;
+
+    (void)HAL_CAN_AddTxMessage(&hcan1, &header, data, &mailbox);
+}
+
 /* Stellt VCU- und Inverter-Nachrichten für den 100-Hz-Sendezyklus zusammen. */
 void CAN_100()
 {

@@ -7,6 +7,7 @@
 #include "motor_control.h"
 #include "stdlib.h"
 #include "stdbool.h"
+#include "can.h"
 
 extern uint8_t AC_Current_L[8];
 extern uint8_t AC_Current_R[8];
@@ -183,6 +184,7 @@ void motor_control()
 	if(HAL_GetTick() > 2000U)
 	{
 		CAN_Recovery_Task();
+		CAN_SendAmsHeartbeat();
 	    CAN_100();
 	    CAN_2();
 	    CAN_ERPM_Forward();
